@@ -1,13 +1,16 @@
 package com.sven.rainbowbeach.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.view.LayoutInflater
+import android.view.View
 import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.enums.SidePattern
 import com.sven.rainbowbeach.R
+import com.sven.rainbowbeach.view.CheckViewActivity
 
 /**
  * @Author:         xwp
@@ -16,13 +19,15 @@ import com.sven.rainbowbeach.R
  */
 class FloatService : Service() {
 
+    private lateinit var context: Context;
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onCreate() {
         super.onCreate()
-
+        context = this
         showFloatView()
     }
 
@@ -42,5 +47,10 @@ class FloatService : Service() {
             .setDragEnable(true)
             .show()
 
+        mFloatView.findViewById<View>(R.id.btn_query_view_id).setOnClickListener {
+            val intent = Intent(context, CheckViewActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 }

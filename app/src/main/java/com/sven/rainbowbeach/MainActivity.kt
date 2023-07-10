@@ -12,6 +12,7 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.sven.rainbowbeach.service.FloatService
 import com.sven.rainbowbeach.util.LogUtils
+import com.sven.rainbowbeach.view.TestFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -19,6 +20,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val testFragment = TestFragment()
+        val beginTransaction = supportFragmentManager.beginTransaction()
+        beginTransaction.add(R.id.fl_test_fragment, testFragment)
+//        beginTransaction.hide(testFragment)
+        beginTransaction.commitAllowingStateLoss()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         if (checkOverlayPermission(this)) {
             btn_open_float_permission.visibility = View.GONE
@@ -43,7 +55,6 @@ class MainActivity : AppCompatActivity() {
                     })
             }
         }
-
     }
 
 

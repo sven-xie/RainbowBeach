@@ -2,6 +2,7 @@ package com.sven.rainbowbeach
 
 import android.app.Application
 import com.sven.rainbowbeach.util.Utils
+import com.sven.rainbowbeachlib.RainbowBeach
 
 /**
  * @Author:         xwp
@@ -14,5 +15,6 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Utils.init(this)
+        RainbowBeach.start(this)
     }
 }

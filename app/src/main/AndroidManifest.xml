@@ -4,6 +4,7 @@
     package="com.sven.rainbowbeach">
 
     <application
+        android:name=".BaseApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -23,7 +24,12 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.FloatService"/>
+        <service android:name=".service.FloatService" />
+
+        <activity
+            android:name=".view.CheckViewActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
     <!-- 悬浮窗-->
