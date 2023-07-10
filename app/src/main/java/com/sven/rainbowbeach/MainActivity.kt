@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.sven.rainbowbeach.service.FloatService
+import com.sven.rainbowbeachlib.service.FloatService
 import com.sven.rainbowbeach.util.LogUtils
 import com.sven.rainbowbeach.view.TestFragment
 import kotlinx.android.synthetic.main.activity_main.*

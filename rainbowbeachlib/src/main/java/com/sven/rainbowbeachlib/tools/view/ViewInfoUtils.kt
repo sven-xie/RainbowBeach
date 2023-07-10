@@ -21,9 +21,23 @@ object ViewInfoUtils {
     private var lastTime = 0L
 
     fun getViewInfo(rawX: Float, rawY: Float): MutableList<ViewInfoBean>? {
+        val allViewInfo = getAllViewInfo()
+        allViewInfo?.let {
+            val iterator = it.iterator()
+            while (iterator.hasNext()) {
+                val infoBean = iterator.next()
+                infoBean.checkStatus = ViewInfoBean.CHECK_STATUS_UNCHECK
+                if (!isInRect(rawX, rawY, infoBean.rect)) {
+                    iterator.remove()
+                }
+            }
+        }
+        return allViewInfo
+    }
+
+    fun getAllViewInfo(): MutableList<ViewInfoBean>? {
         val activity = RainbowBeach.topActivity
         activity ?: return null
-
         RbbLogUtils.logInfo("getViewInfo start >>> ")
         lastTime = System.currentTimeMillis()
         val activityRootView =
@@ -35,13 +49,12 @@ object ViewInfoUtils {
             activity,
             mutableListOf(activityRootView),
             viewInfoList,
-            rawX, rawY,
             activity::class.java.name
         )
 
         val actFragments = getActFragments(activity)
 
-        getFragmentViewRectInfos(activity, actFragments, viewInfoList, rawX, rawY)
+        getFragmentViewRectInfos(activity, actFragments, viewInfoList)
 
         RbbLogUtils.logInfo("getViewInfo end >>> time = ${System.currentTimeMillis() - lastTime}")
 
@@ -53,8 +66,7 @@ object ViewInfoUtils {
     private fun getFragmentViewRectInfos(
         activity: Activity,
         actFragments: List<Fragment>,
-        viewInfoList: MutableList<ViewInfoBean>,
-        rawX: Float, rawY: Float
+        viewInfoList: MutableList<ViewInfoBean>
     ) {
         actFragments.forEach { fragment ->
             fragment.view?.let { rootView ->
@@ -63,8 +75,7 @@ object ViewInfoUtils {
                         activity,
                         mutableListOf(rootView),
                         viewInfoList,
-                        rawX, rawY,
-                        fragment::class.java.simpleName
+                        fragment::class.java.name
                     )
                 } else {
                     val viewId = rootView.id
@@ -73,11 +84,14 @@ object ViewInfoUtils {
                             val viewStrId = activity.resources.getResourceEntryName(viewId)
                             val rect = Rect()
                             rootView.getGlobalVisibleRect(rect)
-                            if (isInRect(rawX, rawY, rect)) {
-                                val viewInfoBean =
-                                    ViewInfoBean(viewStrId, rect, fragment::class.java.name)
-                                viewInfoList.add(viewInfoBean)
-                            }
+                            val viewInfoBean =
+                                ViewInfoBean(
+                                    viewStrId,
+                                    rect,
+                                    view = rootView,
+                                    attachPageName = fragment::class.java.name
+                                )
+                            viewInfoList.add(viewInfoBean)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -92,7 +106,6 @@ object ViewInfoUtils {
         activity: Activity,
         viewGroupList: MutableList<ViewGroup>,
         viewInfoList: MutableList<ViewInfoBean>,
-        rawX: Float, rawY: Float,
         attachName: String
     ) {
         val nextViewGroups = mutableListOf<ViewGroup>()
@@ -107,11 +120,9 @@ object ViewInfoUtils {
                         val viewStrId = activity.resources.getResourceEntryName(viewId)
                         val rect = Rect()
                         it.getGlobalVisibleRect(rect)
-                        if (isInRect(rawX, rawY, rect)) {
-                            val viewInfoBean =
-                                ViewInfoBean(viewStrId, rect, attachName)
-                            viewInfoList.add(viewInfoBean)
-                        }
+                        val viewInfoBean =
+                            ViewInfoBean(viewStrId, rect, attachName, view = it)
+                        viewInfoList.add(viewInfoBean)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -121,7 +132,7 @@ object ViewInfoUtils {
                 }
             }
         }
-        getViewRectInfo(activity, nextViewGroups, viewInfoList, rawX, rawY, attachName)
+        getViewRectInfo(activity, nextViewGroups, viewInfoList, attachName)
     }
 
     private fun getActFragments(activity: Activity): List<Fragment> {

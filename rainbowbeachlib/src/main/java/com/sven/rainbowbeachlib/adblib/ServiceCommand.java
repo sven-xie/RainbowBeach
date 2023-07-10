@@ -1,4 +1,4 @@
-package com.sven.rainbowbeach.adblib;
+package com.sven.rainbowbeachlib.adblib;
 
 import android.util.Log;
 

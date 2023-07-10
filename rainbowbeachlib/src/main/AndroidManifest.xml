@@ -2,4 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sven.rainbowbeachlib">
 
+
+    <application>
+        <service android:name="com.sven.rainbowbeachlib.service.FloatService" />
+
+        <activity
+            android:name="com.sven.rainbowbeachlib.view.CheckViewInfoActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+
+
+    <!-- 悬浮窗-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+
+
+
+
 </manifest>

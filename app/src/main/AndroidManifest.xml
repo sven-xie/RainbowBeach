@@ -24,12 +24,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.FloatService" />
-
-        <activity
-            android:name=".view.CheckViewActivity"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
     </application>
 
     <!-- 悬浮窗-->

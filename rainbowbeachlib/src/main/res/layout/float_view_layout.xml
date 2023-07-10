@@ -4,13 +4,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.sven.rainbowbeach.widgets.CommonButtonView
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_query_view_id"
         android:layout_width="100dp"
         android:layout_height="40dp"
-        android:background="@drawable/common_btn_bg_black"
+        android:background="@color/black"
         android:gravity="center"
-        android:text="查看布局ID"
+        android:text="查看布局"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

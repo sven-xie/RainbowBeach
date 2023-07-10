@@ -1,9 +1,9 @@
-package com.sven.rainbowbeach.adblib
+package com.sven.rainbowbeachlib.adblib
 
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.Base64
-import com.sven.rainbowbeach.util.LogUtils
+import com.sven.rainbowbeachlib.tools.RbbLogUtils
 import java.io.File
 import java.io.IOException
 import java.net.Socket
@@ -42,7 +42,7 @@ class AdbHelper {
     }
 
     private fun asyncRefreshAdbConnection() {
-        LogUtils.i("asyncRefreshAdbConnection ...")
+        RbbLogUtils.logInfo("asyncRefreshAdbConnection ...")
         object : Thread() {
             override fun run() {
                 try {
@@ -85,7 +85,7 @@ class AdbHelper {
                     File(context.filesDir, "public_key")
                 )
             } catch (e: Exception) {
-                LogUtils.i("fail to generate and save key-pair = $e")
+                RbbLogUtils.logInfo("fail to generate and save key-pair = $e")
             }
         }
     }
@@ -111,9 +111,9 @@ class AdbHelper {
         val fileBase64 = Base64.encode(buffer, 2)
         val excCommand = ServiceCommand.excCommand(adbConnection, fileBase64, 1280L, 4096000L)
         if (excCommand) {
-            LogUtils.i("execOsServer success")
+            RbbLogUtils.logInfo("execOsServer success")
         } else {
-            LogUtils.i("execOsServer failed")
+            RbbLogUtils.logInfo("execOsServer failed")
         }
     }
 }

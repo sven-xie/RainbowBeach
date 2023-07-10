@@ -1,4 +1,4 @@
-package com.sven.rainbowbeach.util;
+package com.sven.rainbowbeachlib.tools;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,8 +17,8 @@ public class DisplayUtil {
      * @param pxValue
      * @return
      */
-    public static int px2dip(float pxValue) {
-        float scale = Utils.getContext().getResources().getDisplayMetrics().density;
+    public static int px2dip(Context context, float pxValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -29,8 +29,8 @@ public class DisplayUtil {
      * @param dipValue
      * @return
      */
-    public static int dip2px(float dipValue) {
-        float scale = Utils.getContext().getResources().getDisplayMetrics().density;
+    public static int dip2px(Context context, float dipValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
     }
 
@@ -41,8 +41,8 @@ public class DisplayUtil {
      * @param pxValue
      * @return
      */
-    public static int px2sp(float pxValue) {
-        float fontScale = Utils.getContext().getResources().getDisplayMetrics().scaledDensity;
+    public static int px2sp(Context context, float pxValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
 
@@ -52,16 +52,16 @@ public class DisplayUtil {
      * @param spValue
      * @return
      */
-    public static int sp2px(float spValue) {
-        float fontScale = Utils.getContext().getResources().getDisplayMetrics().scaledDensity;
+    public static int sp2px(Context context, float spValue) {
+        float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5);
     }
 
-    public static int getScreenWidth() {
+    public static int getScreenWidth(Context context) {
         try {
-            WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (windowManager == null) {
-                return Utils.getContext().getResources().getDisplayMetrics().widthPixels;
+                return context.getResources().getDisplayMetrics().widthPixels;
             }
             Point point = new Point();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -75,9 +75,9 @@ public class DisplayUtil {
         return 0;
     }
 
-    public static int getScreenHeightWithoutNavBar() {
+    public static int getScreenHeightWithoutNavBar(Context context) {
         try {
-            WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             Display defaultDisplay = windowManager.getDefaultDisplay();
             //获取内容高度
             DisplayMetrics outMetrics2 = new DisplayMetrics();
@@ -94,11 +94,11 @@ public class DisplayUtil {
      *
      * @return 屏幕高
      */
-    public static int getScreenHeight() {
+    public static int getScreenHeight(Context context) {
         try {
-            WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (windowManager == null) {
-                return Utils.getContext().getResources().getDisplayMetrics().heightPixels;
+                return context.getResources().getDisplayMetrics().heightPixels;
             }
             Point point = new Point();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -117,12 +117,12 @@ public class DisplayUtil {
      *
      * @return
      */
-    public static int getStatusBarHeight() {
+    public static int getStatusBarHeight(Context context) {
         int result = 0;
         //获取状态栏高度的资源id
-        int resourceId = Utils.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = Utils.getContext().getResources().getDimensionPixelSize(resourceId);
+            result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
@@ -131,8 +131,8 @@ public class DisplayUtil {
     /**
      * 获得屏幕真实高度（包含底部导航栏）
      */
-    public static int getScreenRealHeight() {
-        WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+    public static int getScreenRealHeight(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         final Display display = windowManager.getDefaultDisplay();
         Point outPoint = new Point();
         if (Build.VERSION.SDK_INT >= 19) {
@@ -153,16 +153,16 @@ public class DisplayUtil {
      *
      * @return
      */
-    public static int getScreenDpi() {
+    public static int getScreenDpi(Context context) {
         DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
         return metrics.densityDpi;
     }
 
-    public static DisplayMetrics getScreenMetrics() {
+    public static DisplayMetrics getScreenMetrics(Context context) {
         DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(metrics);
         return metrics;
     }
