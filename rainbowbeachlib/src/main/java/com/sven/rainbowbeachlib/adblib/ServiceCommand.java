@@ -133,14 +133,15 @@ public class ServiceCommand {
 
 
     public static boolean excCommand(AdbConnection adbConnection, String command) {
-        AdbStream stream;
+        AdbStream stream = null;
         try {
-            stream = adbConnection.open(command);
+            stream = adbConnection.open("shell:");
             if (stream == null) {
                 return false;
             }
             stream.write("" + '\n');
             waiteForRunOver(stream);
+            stream.write(command + '\n');
             return true;
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();

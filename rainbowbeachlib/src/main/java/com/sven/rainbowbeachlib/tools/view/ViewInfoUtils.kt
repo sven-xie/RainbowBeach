@@ -59,6 +59,7 @@ object ViewInfoUtils {
         RbbLogUtils.logInfo("getViewInfo end >>> time = ${System.currentTimeMillis() - lastTime}")
 
         RbbLogUtils.logInfo("viewInfoList = $viewInfoList")
+        viewInfoList.reverse()
         return viewInfoList
     }
 

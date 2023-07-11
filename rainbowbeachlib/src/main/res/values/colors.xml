@@ -64,4 +64,6 @@
     <color name="Blue_Grey">#607d8b</color>
 
     <color name="title">#333333</color>
+    <color name="line">#e2e2e2</color>
+    <color name="common_bg">#efefef</color>
 </resources>

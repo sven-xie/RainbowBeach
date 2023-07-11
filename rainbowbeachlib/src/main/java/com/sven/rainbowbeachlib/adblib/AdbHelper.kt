@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.util.Base64
 import com.sven.rainbowbeachlib.tools.RbbLogUtils
+import com.sven.rainbowbeachlib.tools.RbbUtils
+import com.sven.rainbowbeachlib.tools.UIThreadUtil
 import java.io.File
 import java.io.IOException
 import java.net.Socket
@@ -34,6 +36,8 @@ class AdbHelper {
     fun stop() {
         commandBlockQueue.clear()
         isAdbConnected.set(false)
+        adbConnection?.close()
+        adbConnection = null
     }
 
 
@@ -42,7 +46,11 @@ class AdbHelper {
     }
 
     private fun asyncRefreshAdbConnection() {
-        RbbLogUtils.logInfo("asyncRefreshAdbConnection ...")
+        if (isAdbConnected.get()) {
+            RbbLogUtils.logInfo("adb 已连接上")
+            return
+        }
+        RbbLogUtils.logInfo("开始连接adb")
         object : Thread() {
             override fun run() {
                 try {
@@ -55,9 +63,15 @@ class AdbHelper {
                     adbConnection = AdbConnection.create(TcpChannel(sock), adbCrypto)
                     adbConnection?.connect()
                     isAdbConnected.set(true)
+                    UIThreadUtil.postUI {
+                        RbbUtils.showToast(mContext, "adb 已连接成功")
+                    }
                     execCommand()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    UIThreadUtil.postUI {
+                        RbbUtils.showToast(mContext, "请检查手机是否开通tcp 5555端口")
+                    }
                 }
             }
         }.start()
@@ -95,7 +109,14 @@ class AdbHelper {
         while (isAdbConnected.get()) {
             val commandStr = commandBlockQueue.take()
             adbConnection?.let {
-                ServiceCommand.excCommand(it, commandStr)
+                val excCommand = ServiceCommand.excCommand(it, commandStr)
+                UIThreadUtil.postUI {
+                    if (excCommand) {
+                        RbbUtils.showToast(mContext, "执行成功")
+                    } else {
+                        RbbUtils.showToast(mContext, "执行失败")
+                    }
+                }
             }
         }
     }

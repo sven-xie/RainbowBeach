@@ -39,4 +39,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'com.github.princekin-f:EasyFloat:2.0.4'
+    api 'com.github.getActivity:XXPermissions:12.6'
 }

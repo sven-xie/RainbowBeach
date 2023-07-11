@@ -11,7 +11,9 @@ import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.enums.SidePattern
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.tools.DisplayUtil
+import com.sven.rainbowbeachlib.view.AdbOperationActivity
 import com.sven.rainbowbeachlib.view.CheckViewInfoActivity
+import com.sven.rainbowbeachlib.view.SpManagerActivity
 
 /**
  * @Author:         xwp
@@ -22,6 +24,7 @@ class FloatService : Service() {
 
     private lateinit var context: Context;
     private var easyFloat: EasyFloat.Builder? = null
+
 
     companion object {
         const val TAG = "FloatService"
@@ -73,7 +76,7 @@ class FloatService : Service() {
             .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
             .setGravity(
                 0,
-                DisplayUtil.getScreenWidth(context) - DisplayUtil.dip2px(context, 110F),
+                DisplayUtil.getScreenWidth(context) - DisplayUtil.dip2px(context, 90F),
                 100
             )
             .setDragEnable(true)
@@ -83,6 +86,18 @@ class FloatService : Service() {
 
         mFloatView.findViewById<View>(R.id.btn_query_view_id).setOnClickListener {
             val intent = Intent(context, CheckViewInfoActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_sp_manager).setOnClickListener {
+            val intent = Intent(context, SpManagerActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_adb).setOnClickListener {
+            val intent = Intent(context, AdbOperationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
