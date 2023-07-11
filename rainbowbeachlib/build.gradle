@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+group 'com.github.sven-xie'
 
 android {
     compileSdk 32
@@ -40,4 +42,21 @@ dependencies {
 
     implementation 'com.github.princekin-f:EasyFloat:2.0.4'
     api 'com.github.getActivity:XXPermissions:12.6'
+}
+
+
+task androidSourcesJar(type: Jar) {
+    classifier 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact androidSourcesJar // optional sources
+            }
+        }
+    }
 }
