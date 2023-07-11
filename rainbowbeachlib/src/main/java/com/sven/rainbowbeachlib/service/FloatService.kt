@@ -55,6 +55,11 @@ class FloatService : Service() {
         showFloatView()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        EasyFloat.dismiss(TAG)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val status = intent?.getIntExtra(KEY_INTENT_FLOAT_STATUS, KEY_INTENT_FLOAT_SHOW)
             ?: KEY_INTENT_FLOAT_SHOW
@@ -68,8 +73,8 @@ class FloatService : Service() {
 
     private fun showFloatView() {
         val mFloatView =
-            LayoutInflater.from(this@FloatService).inflate(R.layout.float_view_layout, null)
-        easyFloat = EasyFloat.with(this@FloatService) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
+            LayoutInflater.from(context).inflate(R.layout.float_view_layout, null)
+        easyFloat = EasyFloat.with(context) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
             .setLayout(mFloatView)
             .setShowPattern(ShowPattern.ALL_TIME)
             .setMatchParent(false, false) // 设置吸附方式，共15种模式，详情参考SidePattern
@@ -100,6 +105,11 @@ class FloatService : Service() {
             val intent = Intent(context, AdbOperationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_exit).setOnClickListener {
+//            EasyFloat.dismiss()
+            stopSelf()
         }
     }
 }

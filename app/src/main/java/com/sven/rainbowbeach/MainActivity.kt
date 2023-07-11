@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sven.rainbowbeach.view.TestFragment
-import com.sven.rainbowbeachlib.service.FloatService
 import com.sven.rainbowbeachlib.view.StartActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,11 +23,6 @@ class MainActivity : AppCompatActivity() {
 //        beginTransaction.hide(testFragment)
         beginTransaction.commitAllowingStateLoss()
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         if (checkOverlayPermission(this)) {
             btn_open_float_permission.visibility = View.GONE
             startActivity(Intent(this@MainActivity, StartActivity::class.java))
@@ -40,6 +34,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (checkOverlayPermission(this)) {
+            btn_open_float_permission.visibility = View.GONE
+        } else {
+            btn_open_float_permission.visibility = View.VISIBLE
+        }
+    }
 
     private fun checkOverlayPermission(context: Context?): Boolean {
         try {

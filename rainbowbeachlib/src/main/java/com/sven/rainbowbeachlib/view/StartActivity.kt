@@ -26,6 +26,7 @@ class StartActivity : FragmentActivity() {
 
         if (checkOverlayPermission(mContext)) {
             startService(Intent(mContext, FloatService::class.java))
+            finish()
         } else {
             XXPermissions.with(this) //申请悬浮窗权限
                 .permission(Permission.SYSTEM_ALERT_WINDOW)
