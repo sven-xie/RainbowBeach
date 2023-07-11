@@ -7,12 +7,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
-import com.sven.rainbowbeachlib.service.FloatService
-import com.sven.rainbowbeach.util.LogUtils
 import com.sven.rainbowbeach.view.TestFragment
+import com.sven.rainbowbeachlib.service.FloatService
+import com.sven.rainbowbeachlib.view.StartActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -34,25 +31,11 @@ class MainActivity : AppCompatActivity() {
 
         if (checkOverlayPermission(this)) {
             btn_open_float_permission.visibility = View.GONE
-            startService(Intent(this@MainActivity, FloatService::class.java))
+            startActivity(Intent(this@MainActivity, StartActivity::class.java))
         } else {
             btn_open_float_permission.visibility = View.VISIBLE
             btn_open_float_permission.setOnClickListener {
-                XXPermissions.with(this) //申请悬浮窗权限
-                    .permission(Permission.SYSTEM_ALERT_WINDOW)
-                    .request(object : OnPermissionCallback {
-                        override fun onGranted(permissions: List<String?>?, all: Boolean) {
-                            if (!all) {
-                                LogUtils.i("请务必开启【浮悬窗】权限")
-                            } else {
-                                startService(Intent(this@MainActivity, FloatService::class.java))
-                            }
-                        }
-
-                        override fun onDenied(permissions: List<String?>?, never: Boolean) {
-                            LogUtils.i("请务必开启【浮悬窗】权限")
-                        }
-                    })
+                startActivity(Intent(this@MainActivity, StartActivity::class.java))
             }
         }
     }

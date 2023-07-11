@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.sven.rainbowbeachlib">
 
 
-    <application
-        android:requestLegacyExternalStorage="true">
+    <application android:requestLegacyExternalStorage="true">
+
+        <activity
+            android:name=".view.StartActivity"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <service android:name="com.sven.rainbowbeachlib.service.FloatService" />
 
         <activity
