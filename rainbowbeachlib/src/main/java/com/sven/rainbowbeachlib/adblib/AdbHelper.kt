@@ -40,6 +40,8 @@ class AdbHelper {
         adbConnection = null
     }
 
+    fun isConnected() = isAdbConnected.get()
+
 
     fun addCommand(command: String) {
         commandBlockQueue.put(command)

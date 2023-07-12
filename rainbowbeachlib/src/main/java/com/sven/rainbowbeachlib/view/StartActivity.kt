@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.sven.rainbowbeachlib.RainbowBeach
 import com.sven.rainbowbeachlib.service.FloatService
 import com.sven.rainbowbeachlib.tools.RbbUtils
 
@@ -23,6 +24,7 @@ class StartActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
+        RainbowBeach.start(application)
 
         if (checkOverlayPermission(mContext)) {
             startService(Intent(mContext, FloatService::class.java))

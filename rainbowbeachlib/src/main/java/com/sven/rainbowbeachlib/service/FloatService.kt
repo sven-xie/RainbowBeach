@@ -10,10 +10,15 @@ import com.lzf.easyfloat.EasyFloat
 import com.lzf.easyfloat.enums.ShowPattern
 import com.lzf.easyfloat.enums.SidePattern
 import com.sven.rainbowbeachlib.R
+import com.sven.rainbowbeachlib.adblib.AdbHelper
+import com.sven.rainbowbeachlib.tools.Constants
 import com.sven.rainbowbeachlib.tools.DisplayUtil
+import com.sven.rainbowbeachlib.tools.FileUtils
+import com.sven.rainbowbeachlib.tools.RbbUtils
 import com.sven.rainbowbeachlib.view.AdbOperationActivity
 import com.sven.rainbowbeachlib.view.CheckViewInfoActivity
 import com.sven.rainbowbeachlib.view.SpManagerActivity
+import java.io.File
 
 /**
  * @Author:         xwp
@@ -24,11 +29,15 @@ class FloatService : Service() {
 
     private lateinit var context: Context;
     private var easyFloat: EasyFloat.Builder? = null
+    private val mAdbHelper by lazy {
+        AdbHelper()
+    }
 
 
     companion object {
         const val TAG = "FloatService"
         const val KEY_INTENT_FLOAT_STATUS = "KEY_INTENT_FLOAT_STATUS"
+        const val KEY_INTENT_ADB_COMMAND_STR = "KEY_INTENT_ADB_COMMAND_STR"
         const val KEY_INTENT_FLOAT_SHOW = 0
         const val KEY_INTENT_FLOAT_HIDE = 1
 
@@ -43,6 +52,12 @@ class FloatService : Service() {
             intent.putExtra(KEY_INTENT_FLOAT_STATUS, KEY_INTENT_FLOAT_HIDE)
             context.startService(intent)
         }
+
+        fun runAdbCommand(context: Context, adbCommandStr: String) {
+            val intent = Intent(context, FloatService::class.java)
+            intent.putExtra(KEY_INTENT_ADB_COMMAND_STR, adbCommandStr)
+            context.startService(intent)
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -53,11 +68,13 @@ class FloatService : Service() {
         super.onCreate()
         context = this
         showFloatView()
+        mAdbHelper.start(context)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         EasyFloat.dismiss(TAG)
+        mAdbHelper.stop()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -65,8 +82,12 @@ class FloatService : Service() {
             ?: KEY_INTENT_FLOAT_SHOW
         if (status == KEY_INTENT_FLOAT_SHOW) {
             EasyFloat.show(TAG)
-        } else {
+        } else if (status == KEY_INTENT_FLOAT_HIDE) {
             EasyFloat.hide(TAG)
+        }
+
+        intent?.getStringExtra(KEY_INTENT_ADB_COMMAND_STR)?.let {
+            mAdbHelper.addCommand(it)
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -81,10 +102,10 @@ class FloatService : Service() {
             .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
             .setGravity(
                 0,
-                DisplayUtil.getScreenWidth(context) - DisplayUtil.dip2px(context, 90F),
+                DisplayUtil.getScreenWidth(context) - DisplayUtil.dip2px(context, 70F),
                 100
             )
-            .setDragEnable(true)
+            .setDragEnable(false)
             .setTag(TAG)
 
         easyFloat?.show()
@@ -99,6 +120,24 @@ class FloatService : Service() {
             val intent = Intent(context, SpManagerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_screen_shot).setOnClickListener {
+            if (!mAdbHelper.isConnected()) {
+                RbbUtils.showToast(context, "adb未连接")
+                return@setOnClickListener
+            }
+            FileUtils.createFolder(Constants.SCREENSHOT_PATH)
+            mAdbHelper.addCommand("/system/bin/screencap -p " + Constants.SCREENSHOT_PATH + File.separator + System.currentTimeMillis() + ".png")
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_screen_record).setOnClickListener {
+            if (!mAdbHelper.isConnected()) {
+                RbbUtils.showToast(context, "adb未连接")
+                return@setOnClickListener
+            }
+            FileUtils.createFolder(Constants.SCREEN_RECORD_PATH)
+            mAdbHelper.addCommand("screenrecord " + Constants.SCREEN_RECORD_PATH + File.separator + System.currentTimeMillis() + ".mp4")
         }
 
         mFloatView.findViewById<View>(R.id.btn_adb).setOnClickListener {

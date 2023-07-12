@@ -43,7 +43,7 @@ object ViewInfoUtils {
         val activityRootView =
             activity.window.decorView.findViewById<View>(android.R.id.content) as ViewGroup
 
-        val viewInfoList = mutableListOf<ViewInfoBean>()
+        val viewInfoList = HashMap<Int, ViewInfoBean>()
 
         getViewRectInfo(
             activity,
@@ -59,40 +59,45 @@ object ViewInfoUtils {
         RbbLogUtils.logInfo("getViewInfo end >>> time = ${System.currentTimeMillis() - lastTime}")
 
         RbbLogUtils.logInfo("viewInfoList = $viewInfoList")
-        viewInfoList.reverse()
-        return viewInfoList
+
+        return viewInfoList.values.reversed().toMutableList()
     }
 
 
     private fun getFragmentViewRectInfos(
         activity: Activity,
         actFragments: List<Fragment>,
-        viewInfoList: MutableList<ViewInfoBean>
+        viewInfoList: HashMap<Int, ViewInfoBean>
     ) {
         actFragments.forEach { fragment ->
+            val attachName = fragment::class.java.name
             fragment.view?.let { rootView ->
                 if (rootView is ViewGroup) {
                     getViewRectInfo(
                         activity,
                         mutableListOf(rootView),
                         viewInfoList,
-                        fragment::class.java.name
+                        attachName
                     )
                 } else {
                     val viewId = rootView.id
                     if (viewId != 0) {
                         try {
-                            val viewStrId = activity.resources.getResourceEntryName(viewId)
-                            val rect = Rect()
-                            rootView.getGlobalVisibleRect(rect)
-                            val viewInfoBean =
-                                ViewInfoBean(
-                                    viewStrId,
-                                    rect,
-                                    view = rootView,
-                                    attachPageName = fragment::class.java.name
-                                )
-                            viewInfoList.add(viewInfoBean)
+                            if (viewInfoList.contains(viewId)) {
+                                viewInfoList[viewId]?.attachPageName = attachName
+                            } else {
+                                val viewStrId = activity.resources.getResourceEntryName(viewId)
+                                val rect = Rect()
+                                rootView.getGlobalVisibleRect(rect)
+                                val viewInfoBean =
+                                    ViewInfoBean(
+                                        viewStrId,
+                                        rect,
+                                        view = rootView,
+                                        attachPageName = attachName
+                                    )
+                                viewInfoList[viewId] = viewInfoBean
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -106,7 +111,7 @@ object ViewInfoUtils {
     private fun getViewRectInfo(
         activity: Activity,
         viewGroupList: MutableList<ViewGroup>,
-        viewInfoList: MutableList<ViewInfoBean>,
+        viewInfoList: HashMap<Int, ViewInfoBean>,
         attachName: String
     ) {
         val nextViewGroups = mutableListOf<ViewGroup>()
@@ -118,12 +123,16 @@ object ViewInfoUtils {
                 val viewId = it.id
                 if (viewId != 0) {
                     try {
-                        val viewStrId = activity.resources.getResourceEntryName(viewId)
-                        val rect = Rect()
-                        it.getGlobalVisibleRect(rect)
-                        val viewInfoBean =
-                            ViewInfoBean(viewStrId, rect, attachName, view = it)
-                        viewInfoList.add(viewInfoBean)
+                        if (viewInfoList.contains(viewId)) {
+                            viewInfoList[viewId]?.attachPageName = attachName
+                        } else {
+                            val viewStrId = activity.resources.getResourceEntryName(viewId)
+                            val rect = Rect()
+                            it.getGlobalVisibleRect(rect)
+                            val viewInfoBean =
+                                ViewInfoBean(viewStrId, rect, attachName, view = it)
+                            viewInfoList[viewId] = viewInfoBean
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

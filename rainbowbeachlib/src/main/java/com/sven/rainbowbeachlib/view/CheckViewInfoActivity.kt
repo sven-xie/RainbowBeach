@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lzf.easyfloat.EasyFloat
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.bean.ViewInfoBean
 import com.sven.rainbowbeachlib.service.FloatService
@@ -73,17 +74,17 @@ class CheckViewInfoActivity : FragmentActivity() {
             }
         }
 
-
         mViewInfoRectView = findViewById(R.id.check_rect_view)
-        FloatService.hideFloatView(mContext)
 
         getAllViewInfo()
+
+        EasyFloat.hide(FloatService.TAG)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        FloatService.showFloatView(mContext)
+        EasyFloat.show(FloatService.TAG)
     }
 
     private fun getAllViewInfo() {

@@ -7,45 +7,86 @@
     <LinearLayout
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/common_bg_radius_10_black"
+        android:background="@drawable/common_bg_radius_10_trans_black_40"
         android:orientation="vertical">
 
-        <com.sven.base.widgets.CommonButtonView
-            android:id="@+id/btn_query_view_id"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="查看布局"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
+            android:layout_height="150dp"
+            android:scrollbars="none">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.sven.base.widgets.CommonButtonView
-            android:id="@+id/btn_sp_manager"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="数据管理"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
+                <com.sven.base.widgets.CommonButtonView
+                    android:id="@+id/btn_query_view_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="查看布局"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
 
-        <com.sven.base.widgets.CommonButtonView
-            android:id="@+id/btn_adb"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center"
-            android:text="adb"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
+                <com.sven.base.widgets.CommonButtonView
+                    android:id="@+id/btn_sp_manager"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="数据管理"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <com.sven.base.widgets.CommonButtonView
+                    android:id="@+id/btn_screen_shot"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="截图"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <com.sven.base.widgets.CommonButtonView
+                    android:id="@+id/btn_screen_record"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="录屏"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <com.sven.base.widgets.CommonButtonView
+                    android:id="@+id/btn_adb"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="adb"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+        </ScrollView>
 
         <View
             android:layout_width="match_parent"

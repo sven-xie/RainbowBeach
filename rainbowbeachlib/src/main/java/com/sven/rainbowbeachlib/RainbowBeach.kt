@@ -36,8 +36,8 @@ object RainbowBeach {
             }
 
             override fun onActivityResumed(activity: Activity) {
-                RbbLogUtils.logInfo("RainbowBeach onActivityResumed activity = $activity")
                 if (!activity::class.java.name.contains("com.sven.rainbowbeachlib")) {
+                    RbbLogUtils.logInfo("RainbowBeach onActivityResumed activity = $activity")
                     topActivity = activity
                 }
             }
@@ -54,9 +54,6 @@ object RainbowBeach {
             }
 
             override fun onActivityDestroyed(activity: Activity) {
-                if (!activity::class.java.name.contains("com.sven.rainbowbeachlib")) {
-                    topActivity = null
-                }
             }
         })
     }
