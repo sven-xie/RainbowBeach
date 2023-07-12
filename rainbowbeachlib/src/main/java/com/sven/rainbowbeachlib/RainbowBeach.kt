@@ -3,8 +3,10 @@ package com.sven.rainbowbeachlib
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import com.sven.rainbowbeachlib.tools.RbbLogUtils
+import com.sven.rainbowbeachlib.view.StartActivity
 
 /**
  * @Author:         xwp
@@ -16,8 +18,9 @@ import com.sven.rainbowbeachlib.tools.RbbLogUtils
 object RainbowBeach {
     var topActivity: Activity? = null
 
-    fun start(application: Application) {
-        registerActivityListener(application)
+    fun start(activity: Activity) {
+        registerActivityListener(activity.application)
+        activity.startActivity(Intent(activity, StartActivity::class.java))
     }
 
     fun stop() {

@@ -1,14 +1,13 @@
 package com.sven.rainbowbeach
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sven.rainbowbeach.view.TestFragment
-import com.sven.rainbowbeachlib.view.StartActivity
+import com.sven.rainbowbeachlib.RainbowBeach
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -25,11 +24,11 @@ class MainActivity : AppCompatActivity() {
 
         if (checkOverlayPermission(this)) {
             btn_open_float_permission.visibility = View.GONE
-            startActivity(Intent(this@MainActivity, StartActivity::class.java))
+            RainbowBeach.start(this)
         } else {
             btn_open_float_permission.visibility = View.VISIBLE
             btn_open_float_permission.setOnClickListener {
-                startActivity(Intent(this@MainActivity, StartActivity::class.java))
+                RainbowBeach.start(this)
             }
         }
     }

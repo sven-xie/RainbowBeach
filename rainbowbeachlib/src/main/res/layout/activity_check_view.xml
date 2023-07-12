@@ -8,8 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/black_tran40"
-        android:orientation="vertical"
-        android:paddingBottom="20dp">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,6 +33,14 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_baseline_arrow_back_24" />
+
+            <ImageView
+                android:id="@+id/iv_hide"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_baseline_hide_source_24" />
         </RelativeLayout>
 
 
@@ -42,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:minHeight="40dp" />
     </LinearLayout>
 

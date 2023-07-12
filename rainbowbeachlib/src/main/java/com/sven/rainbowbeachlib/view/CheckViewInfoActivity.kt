@@ -8,6 +8,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,14 @@ class CheckViewInfoActivity : FragmentActivity() {
                 return@setOnClickListener
             }
             finish()
+        }
+
+        findViewById<View>(R.id.iv_hide)?.setOnClickListener {
+            if (mRvViewInfo.isVisible) {
+                mRvViewInfo.visibility = View.GONE
+            } else {
+                mRvViewInfo.visibility = View.VISIBLE
+            }
         }
 
         mRvViewInfo = findViewById(R.id.rv_view_info)

@@ -24,7 +24,6 @@ class StartActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = this
-        RainbowBeach.start(application)
 
         if (checkOverlayPermission(mContext)) {
             startService(Intent(mContext, FloatService::class.java))
