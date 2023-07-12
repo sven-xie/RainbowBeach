@@ -8,22 +8,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/black_tran40"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp">
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
 
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
                 android:gravity="center"
-                android:text="@string/check_view_info_tips"
+                android:text="点击View查看信息"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -31,10 +32,8 @@
                 android:id="@+id/iv_close"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_baseline_close_24" />
+                android:src="@drawable/ic_baseline_arrow_back_24" />
         </RelativeLayout>
 
 
@@ -42,6 +41,7 @@
             android:id="@+id/rv_view_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:minHeight="40dp" />
     </LinearLayout>
 

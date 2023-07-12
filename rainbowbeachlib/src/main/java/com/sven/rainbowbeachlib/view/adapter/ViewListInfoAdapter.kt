@@ -13,8 +13,8 @@ import com.sven.rainbowbeachlib.bean.ViewInfoBean
  * @CreateDate:     2023/7/10
  * @Version:        1.0
  */
-class ViewInfoAdapter(private var mData: MutableList<ViewInfoBean>) :
-    RecyclerView.Adapter<ViewInfoAdapter.MyViewHolder>() {
+class ViewListInfoAdapter(private var mData: MutableList<ViewInfoBean>) :
+    RecyclerView.Adapter<ViewListInfoAdapter.MyViewHolder>() {
 
     var mItemClickListener: OnViewInfoItemClickListener? = null
     var currentSelectItem: ViewInfoBean? = null
@@ -51,18 +51,19 @@ class ViewInfoAdapter(private var mData: MutableList<ViewInfoBean>) :
         holder.mTvQueryDetail.text = "点击查看详情"
 
         holder.mTvQueryDetail.setOnClickListener {
-            if (holder.mTvDetailInfo.visibility == View.VISIBLE) {
-                holder.mTvDetailInfo.visibility = View.GONE
-                holder.mTvDetailInfo.text = ""
-                holder.mTvQueryDetail.text = "点击查看详情"
-            } else {
-                val curView = viewInfoBean.view
-                curView?.let { view ->
-                    holder.mTvDetailInfo.visibility = View.VISIBLE
-                    holder.mTvDetailInfo.text = "父控件：${view.parent} ；  背景色：${view.background}"
-                    holder.mTvQueryDetail.text = "关闭详情"
-                }
-            }
+            mItemClickListener?.onItemDetailClick(viewInfoBean)
+//            if (holder.mTvDetailInfo.visibility == View.VISIBLE) {
+//                holder.mTvDetailInfo.visibility = View.GONE
+//                holder.mTvDetailInfo.text = ""
+//                holder.mTvQueryDetail.text = "点击查看详情"
+//            } else {
+//                val curView = viewInfoBean.view
+//                curView?.let { view ->
+//                    holder.mTvDetailInfo.visibility = View.VISIBLE
+//                    holder.mTvDetailInfo.text = "父控件：${view.parent} ；  背景色：${view.background}"
+//                    holder.mTvQueryDetail.text = "关闭详情"
+//                }
+//            }
         }
     }
 
