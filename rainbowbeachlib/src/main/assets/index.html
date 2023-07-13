@@ -145,6 +145,7 @@
                 lastPathStack = []
                 queryFiles("videos");
             });
+
         }
 
 
@@ -162,31 +163,39 @@
 </head>
 
 <body>
-    <button class="common_btn" id="btnback" type="button">后退</button>
-    <button class="common_btn" id="btnallfile">查看所有文件</button>
-    <button class="common_btn" id="btnimg">查看图片</button>
-    <button class="common_btn" id="btnvideo">查看视频</button>
-    <ul id="filelist" class="img-wrapper"></ul>
-    <div id="img_video_container">
-        <video class="videoplayer" id="videoplayer" controls="controls"></video>
-        <img class="imgplayer" id="imgplayer" controls="controls"></img>
-    </div>
+    <div id="root_container">
+        <button class="common_btn" id="btnback" type="button">后退</button>
+        <button class="common_btn" id="btnallfile">查看所有文件</button>
+        <button class="common_btn" id="btnimg">查看图片</button>
+        <button class="common_btn" id="btnvideo">查看视频</button>
+        <ul id="filelist" class="img-wrapper"></ul>
+        <div id="img_video_container">
+            <video class="videoplayer" id="videoplayer" controls="controls"></video>
+            <img class="imgplayer" id="imgplayer" controls="controls"></img>
+        </div>
 
-    <div id="loading" class="loading_container">
-        <div class="loading">
-            
+        <div id="loading" class="loading_container">
+            <div class="loading">
+
+            </div>
         </div>
     </div>
 
 </body>
 
 <style>
+    root_container {
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+    }
+
     .common_btn {
         width: 120px;
         height: 60px;
         text-align: center;
         color: #fff;
-        background-color: #170d0d;
+        background-color: #555555;
     }
 
 
@@ -195,6 +204,19 @@
         max-width: 50%;
         list-style-type: none;
     }
+
+    img_video_container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        display: none;
+    }
+
 
     .videoplayer {
         max-width: 50%;
@@ -220,16 +242,6 @@
         display: none;
     }
 
-    img_video_container {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
-        display: none;
-    }
 
     btnclose {
         width: 100px;
@@ -248,7 +260,7 @@
         left: 0;
         height: 100%;
         width: 100%;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.3);
     }
 
 
