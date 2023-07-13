@@ -27,10 +27,13 @@ import java.io.File
  */
 class FloatService : Service() {
 
-    private lateinit var context: Context;
+    private lateinit var mContext: Context;
     private var easyFloat: EasyFloat.Builder? = null
     private val mAdbHelper by lazy {
         AdbHelper()
+    }
+    private val mLocalFileServer by lazy {
+        LocalFileServer()
     }
 
 
@@ -66,15 +69,17 @@ class FloatService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        context = this
+        mContext = this
         showFloatView()
-        mAdbHelper.start(context)
+        mAdbHelper.start(mContext)
+        mLocalFileServer.start(mContext)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         EasyFloat.dismiss(TAG)
         mAdbHelper.stop()
+        mLocalFileServer.destroy()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -94,15 +99,15 @@ class FloatService : Service() {
 
     private fun showFloatView() {
         val mFloatView =
-            LayoutInflater.from(context).inflate(R.layout.float_view_layout, null)
-        easyFloat = EasyFloat.with(context) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
+            LayoutInflater.from(mContext).inflate(R.layout.float_view_layout, null)
+        easyFloat = EasyFloat.with(mContext) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
             .setLayout(mFloatView)
             .setShowPattern(ShowPattern.ALL_TIME)
             .setMatchParent(false, false) // 设置吸附方式，共15种模式，详情参考SidePattern
             .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
             .setGravity(
                 0,
-                DisplayUtil.getScreenWidth(context) - DisplayUtil.dip2px(context, 70F),
+                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 70F),
                 100
             )
             .setDragEnable(false)
@@ -111,20 +116,20 @@ class FloatService : Service() {
         easyFloat?.show()
 
         mFloatView.findViewById<View>(R.id.btn_query_view_id).setOnClickListener {
-            val intent = Intent(context, CheckViewInfoActivity::class.java)
+            val intent = Intent(mContext, CheckViewInfoActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
         mFloatView.findViewById<View>(R.id.btn_sp_manager).setOnClickListener {
-            val intent = Intent(context, SpManagerActivity::class.java)
+            val intent = Intent(mContext, SpManagerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
         mFloatView.findViewById<View>(R.id.btn_screen_shot).setOnClickListener {
             if (!mAdbHelper.isConnected()) {
-                RbbUtils.showToast(context, "adb未连接")
+                RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
             }
             FileUtils.createFolder(Constants.SCREENSHOT_PATH)
@@ -133,7 +138,7 @@ class FloatService : Service() {
 
         mFloatView.findViewById<View>(R.id.btn_screen_record).setOnClickListener {
             if (!mAdbHelper.isConnected()) {
-                RbbUtils.showToast(context, "adb未连接")
+                RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
             }
             FileUtils.createFolder(Constants.SCREEN_RECORD_PATH)
@@ -141,7 +146,7 @@ class FloatService : Service() {
         }
 
         mFloatView.findViewById<View>(R.id.btn_adb).setOnClickListener {
-            val intent = Intent(context, AdbOperationActivity::class.java)
+            val intent = Intent(mContext, AdbOperationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }

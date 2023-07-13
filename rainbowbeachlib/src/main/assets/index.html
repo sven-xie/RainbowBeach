@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script src="jquery-1.7.2.min.js" type="text/javascript"></script>
+
+    <title>彩虹沙滩</title>
+    <script type="text/javascript">
+
+        var lastPathStack = [];
+        var isShowImgVideo = false;
+
+        // jQuery(function () {
+        //     $('body').append('<div id="loading" src="/loading.gif" style="display:none;position:fixed;z-index:20202001;top:0;left:0;height:100%;width:100%;background: rgba(0,0,0,0.8) no-repeat fixed center;"></div>');
+
+        // });
+
+
+        $(function () {
+            hideImgVideoContainer();
+            lastPathStack.push("all");
+            queryFiles("all");
+            initBtnClick();
+        });
+
+        function queryFiles(path) {
+            var now = new Date();
+            var url = 'files' + '?' + "path=" + path;
+            showLoading()
+            $.getJSON(url, function (data) {
+                console.log(data);
+                $("#filelist").find("li").remove();
+                for (var i = 0; i < data.length; i++) {
+                    // var $li = $('<li>' + '<span>' + data[i].path + '</span>' + '</li>');
+                    var namePreStr = "【文件夹】"
+                    var nameEndStr = ""
+                    if (data[i].type == 1) {
+                        namePreStr = "【图片】"
+                    } else if (data[i].type == 2) {
+                        namePreStr = "【视频】"
+                    } else if (data[i].type == 3) {
+                        namePreStr = "【文件夹】"
+                        nameEndStr = "       >>"
+                    } else {
+                        namePreStr = "【文件】"
+                    }
+                    var $li = $('<li>' + namePreStr + "  " + data[i].name + nameEndStr + '</li>');
+                    $li.attr("path", data[i].path);
+                    $li.attr("type", data[i].type);
+                    $("#filelist").append($li);
+                    $li.click(function () {
+                        var path = $(this).attr("path");
+                        var type = $(this).attr("type");
+                        console.log(path);
+                        console.log(type);
+                        if (type == 2) {
+                            refreshImgViewShow(false);
+                            refreshVideoViewShow(true);
+                            var $video = $("#videoplayer");
+                            var p = "/files/" + path;
+                            $video.attr("src", "/files/" + path);
+                            $video[0].play();
+                        } else if (type == 1) {
+                            refreshVideoViewShow(false);
+                            refreshImgViewShow(true);
+                            var $imgpalyer = $("#imgplayer");
+                            var p = "/files/" + path;
+                            $imgpalyer.attr("src", "/files/" + path);
+                        } else if (type == 3) {
+                            lastPathStack.push(path);
+                            console.log("path 222 = " + path);
+                            queryFiles(path);
+                        } else {
+
+                        }
+                    });
+                }
+                hideLoading();
+            });
+        };
+
+        function refreshVideoViewShow(isShow) {
+            if (isShow) {
+                $("#img_video_container").css("display", "block");
+                $("#videoplayer").css("display", "block");
+                isShowImgVideo = true;
+                document.getElementById("btnback").innerHTML = "关闭视频";
+            } else {
+                $("#videoplayer").css("display", "none");
+            }
+        }
+
+        function refreshImgViewShow(isShow) {
+            if (isShow) {
+                $("#img_video_container").css("display", "block");
+                $("#imgplayer").css("display", "block");
+                isShowImgVideo = true;
+                document.getElementById("btnback").innerHTML = "关闭图片";
+            } else {
+                $("#imgplayer").css("display", "none");
+            }
+        }
+
+        function hideImgVideoContainer() {
+            $("#videoplayer")[0].pause()
+            $("#img_video_container").css("display", "none");
+            $("#imgplayer").css("display", "none");
+            $("#videoplayer").css("display", "none");
+            $("#btnclose").css("display", "none");
+            isShowImgVideo = false;
+            document.getElementById("btnback").innerHTML = "后退";
+        }
+
+
+        function initBtnClick() {
+            $("#btnback").click(function () {
+                if (isShowImgVideo) {
+                    hideImgVideoContainer();
+                    return;
+                }
+                if (lastPathStack.length <= 1) {
+                    return;
+                }
+
+                var lastpathTemp = lastPathStack[lastPathStack.length - 2];
+                lastPathStack.pop();
+                queryFiles(lastpathTemp)
+            });
+
+            $("#btnallfile").click(function () {
+                hideImgVideoContainer();
+                lastPathStack = ["all"]
+                queryFiles("all");
+            });
+
+            $("#btnimg").click(function () {
+                hideImgVideoContainer();
+                lastPathStack = []
+                queryFiles("images");
+            });
+
+            $("#btnvideo").click(function () {
+                hideImgVideoContainer();
+                lastPathStack = []
+                queryFiles("videos");
+            });
+        }
+
+
+        function showLoading() {
+            $("#loading").show();
+        }
+
+        function hideLoading() {
+            $("#loading").hide();
+        }
+
+
+
+    </script>
+</head>
+
+<body>
+    <button class="common_btn" id="btnback" type="button">后退</button>
+    <button class="common_btn" id="btnallfile">查看所有文件</button>
+    <button class="common_btn" id="btnimg">查看图片</button>
+    <button class="common_btn" id="btnvideo">查看视频</button>
+    <ul id="filelist" class="img-wrapper"></ul>
+    <div id="img_video_container">
+        <video class="videoplayer" id="videoplayer" controls="controls"></video>
+        <img class="imgplayer" id="imgplayer" controls="controls"></img>
+    </div>
+
+    <div id="loading" class="loading_container">
+        <div class="loading">
+            
+        </div>
+    </div>
+
+</body>
+
+<style>
+    .common_btn {
+        width: 120px;
+        height: 60px;
+        text-align: center;
+        color: #fff;
+        background-color: #170d0d;
+    }
+
+
+    ul {
+        width: max-content;
+        max-width: 50%;
+        list-style-type: none;
+    }
+
+    .videoplayer {
+        max-width: 50%;
+        max-height: 70%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        display: none;
+    }
+
+    .imgplayer {
+        max-width: 50%;
+        max-height: 70%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        display: none;
+    }
+
+    img_video_container {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        display: none;
+    }
+
+    btnclose {
+        width: 100px;
+        height: 60px;
+        margin: auto;
+        display: none;
+    }
+
+
+
+    .loading_container {
+        display: none;
+        position: fixed;
+        z-index: 20202001;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+
+    .loading {
+        width: 100px;
+        height: 100px;
+        border: 10px solid #fff;
+        border-top-color: transparent;
+        border-radius: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        animation: circle infinite 0.75s linear;
+    }
+
+    @keyframes circle {
+        0% {
+            transform: rotate(0);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+
+</html>
