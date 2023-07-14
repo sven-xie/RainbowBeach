@@ -73,6 +73,27 @@ class LocalFileServer {
             }
         }
 
+        // 上传文件的接口
+        server.get("/updateFile") { request, response ->
+            request ?: return@get
+            response ?: return@get
+            val path = request.query["path"]?.get(0)
+            if (path != null && path.isNotEmpty() && path.startsWith("/")) {
+                val file = File(path);
+                if (file.exists() && file.isFile) {
+                    try {
+                        val fis = FileInputStream(file)
+                        response.sendStream(fis, fis.available().toLong())
+                    } catch (e: Exception) {
+                        e.printStackTrace();
+                    }
+                    return@get;
+                }
+            }
+            response.code(404).send("下载失败")
+        }
+
+        // 查看图片和视频的接口
         server.get("/files/.*") { request, response ->
             request ?: return@get
             response ?: return@get

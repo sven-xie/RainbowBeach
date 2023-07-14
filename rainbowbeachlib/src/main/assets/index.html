@@ -36,7 +36,6 @@
                     $("#filelist").append($li);
                 } else {
                     for (var i = 0; i < data.length; i++) {
-                        // var $li = $('<li>' + '<span>' + data[i].path + '</span>' + '</li>');
                         var namePreStr = "【文件夹】"
                         var nameEndStr = ""
                         if (data[i].type == 1) {
@@ -62,21 +61,19 @@
                                 refreshImgViewShow(false);
                                 refreshVideoViewShow(true);
                                 var $video = $("#videoplayer");
-                                var p = "/files/" + path;
                                 $video.attr("src", "/files/" + path);
                                 $video[0].play();
                             } else if (type == 1) {
                                 refreshVideoViewShow(false);
                                 refreshImgViewShow(true);
                                 var $imgpalyer = $("#imgplayer");
-                                var p = "/files/" + path;
                                 $imgpalyer.attr("src", "/files/" + path);
                             } else if (type == 3) {
                                 lastPathStack.push(path);
                                 console.log("path 222 = " + path);
                                 queryFiles(path);
                             } else {
-
+                                checkAndDownLoadFile(path);
                             }
                         });
                     }
@@ -157,6 +154,22 @@
                 }
             });
 
+        }
+
+
+        function checkAndDownLoadFile(path) {
+            var isToDownlaod = confirm("确定要下载该文件吗？");
+            if (isToDownlaod) {
+                // var url = 'downloadFile' + '?' + "path=" + path;
+                var url = "/files/" + path;
+                window.open(url);
+                // $.getJSON(url, function (data) {
+                //     console.log(data);
+                //     if (data.code == 404) {
+                //         alert("下载失败");
+                //     }
+                // });
+            }
         }
 
 
