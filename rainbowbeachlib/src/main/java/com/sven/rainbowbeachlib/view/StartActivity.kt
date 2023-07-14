@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.sven.rainbowbeachlib.RainbowBeach
 import com.sven.rainbowbeachlib.service.FloatService
 import com.sven.rainbowbeachlib.tools.RbbUtils
 
@@ -31,10 +30,11 @@ class StartActivity : FragmentActivity() {
         } else {
             XXPermissions.with(this) //申请悬浮窗权限
                 .permission(Permission.SYSTEM_ALERT_WINDOW)
+                .permission(Permission.READ_EXTERNAL_STORAGE)
                 .request(object : OnPermissionCallback {
                     override fun onGranted(permissions: List<String?>?, all: Boolean) {
                         if (!all) {
-                            RbbUtils.showToast(mContext, "请务必开启【浮悬窗】权限")
+                            RbbUtils.showToast(mContext, "请务必开启【浮悬窗】权限和存储读取权限")
                         } else {
                             startService(Intent(mContext, FloatService::class.java))
                         }
@@ -42,7 +42,7 @@ class StartActivity : FragmentActivity() {
                     }
 
                     override fun onDenied(permissions: List<String?>?, never: Boolean) {
-                        RbbUtils.showToast(mContext, "请务必开启【浮悬窗】权限")
+                        RbbUtils.showToast(mContext, "请务必开启【浮悬窗】权限和存储读取权限")
                         finish()
                     }
                 })

@@ -31,50 +31,55 @@
             $.getJSON(url, function (data) {
                 console.log(data);
                 $("#filelist").find("li").remove();
-                for (var i = 0; i < data.length; i++) {
-                    // var $li = $('<li>' + '<span>' + data[i].path + '</span>' + '</li>');
-                    var namePreStr = "【文件夹】"
-                    var nameEndStr = ""
-                    if (data[i].type == 1) {
-                        namePreStr = "【图片】"
-                    } else if (data[i].type == 2) {
-                        namePreStr = "【视频】"
-                    } else if (data[i].type == 3) {
-                        namePreStr = "【文件夹】"
-                        nameEndStr = "       >>"
-                    } else {
-                        namePreStr = "【文件】"
-                    }
-                    var $li = $('<li>' + namePreStr + "  " + data[i].name + nameEndStr + '</li>');
-                    $li.attr("path", data[i].path);
-                    $li.attr("type", data[i].type);
+                if (data == null || data.length == 0) {
+                    var $li = $('<li>' + "未找到文件" + '</li>');
                     $("#filelist").append($li);
-                    $li.click(function () {
-                        var path = $(this).attr("path");
-                        var type = $(this).attr("type");
-                        console.log(path);
-                        console.log(type);
-                        if (type == 2) {
-                            refreshImgViewShow(false);
-                            refreshVideoViewShow(true);
-                            var $video = $("#videoplayer");
-                            var p = "/files/" + path;
-                            $video.attr("src", "/files/" + path);
-                            $video[0].play();
-                        } else if (type == 1) {
-                            refreshVideoViewShow(false);
-                            refreshImgViewShow(true);
-                            var $imgpalyer = $("#imgplayer");
-                            var p = "/files/" + path;
-                            $imgpalyer.attr("src", "/files/" + path);
-                        } else if (type == 3) {
-                            lastPathStack.push(path);
-                            console.log("path 222 = " + path);
-                            queryFiles(path);
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        // var $li = $('<li>' + '<span>' + data[i].path + '</span>' + '</li>');
+                        var namePreStr = "【文件夹】"
+                        var nameEndStr = ""
+                        if (data[i].type == 1) {
+                            namePreStr = "【图片】"
+                        } else if (data[i].type == 2) {
+                            namePreStr = "【视频】"
+                        } else if (data[i].type == 3) {
+                            namePreStr = "【文件夹】"
+                            nameEndStr = ">>>"
                         } else {
-
+                            namePreStr = "【文件】"
                         }
-                    });
+                        var $li = $('<li>' + namePreStr + "  " + data[i].name + nameEndStr + '</li>');
+                        $li.attr("path", data[i].path);
+                        $li.attr("type", data[i].type);
+                        $("#filelist").append($li);
+                        $li.click(function () {
+                            var path = $(this).attr("path");
+                            var type = $(this).attr("type");
+                            console.log(path);
+                            console.log(type);
+                            if (type == 2) {
+                                refreshImgViewShow(false);
+                                refreshVideoViewShow(true);
+                                var $video = $("#videoplayer");
+                                var p = "/files/" + path;
+                                $video.attr("src", "/files/" + path);
+                                $video[0].play();
+                            } else if (type == 1) {
+                                refreshVideoViewShow(false);
+                                refreshImgViewShow(true);
+                                var $imgpalyer = $("#imgplayer");
+                                var p = "/files/" + path;
+                                $imgpalyer.attr("src", "/files/" + path);
+                            } else if (type == 3) {
+                                lastPathStack.push(path);
+                                console.log("path 222 = " + path);
+                                queryFiles(path);
+                            } else {
+
+                            }
+                        });
+                    }
                 }
                 hideLoading();
             });
@@ -146,6 +151,12 @@
                 queryFiles("videos");
             });
 
+            $("#btn_close_img_video").click(function () {
+                if (isShowImgVideo) {
+                    hideImgVideoContainer();
+                }
+            });
+
         }
 
 
@@ -164,12 +175,23 @@
 
 <body>
     <div id="root_container">
-        <button class="common_btn" id="btnback" type="button">后退</button>
-        <button class="common_btn" id="btnallfile">查看所有文件</button>
-        <button class="common_btn" id="btnimg">查看图片</button>
-        <button class="common_btn" id="btnvideo">查看视频</button>
+        <p style="margin-left: 20px; margin-top: 10px; font-size: 20px">
+            <span style="color: #FF0000;">彩</span>
+            <span style="color: #FF7F00;">虹</span>
+            <span style="color: #FFFF00;">沙</span>
+            <span style="color: #00FF00;">滩</span>
+            <span style="color: #00FFFF;">开</span>
+            <span style="color: #0000FF;">发</span>
+            <span style="color: #8B00FF;">助</span>
+            <span style="color: #000000;">手</span>
+        </p>
+        <button class="common_btn" id="btnback" type="button" style="background-color: #555555;">后退</button>
+        <button class="common_btn" id="btnallfile" style="background-color: #555555;">查看所有文件</button>
+        <button class="common_btn" id="btnimg" style="background-color: #555555;">查看图片</button>
+        <button class="common_btn" id="btnvideo" style="background-color: #555555;">查看视频</button>
         <ul id="filelist" class="img-wrapper"></ul>
-        <div id="img_video_container">
+        <div id="img_video_container" class="img_video_container">
+            <div id="btn_close_img_video" class="btn_close_img_video">关闭</div>
             <video class="videoplayer" id="videoplayer" controls="controls"></video>
             <img class="imgplayer" id="imgplayer" controls="controls"></img>
         </div>
@@ -194,6 +216,7 @@
         width: 120px;
         height: 60px;
         text-align: center;
+        margin-left: 10px;
         color: #fff;
         background-color: #555555;
     }
@@ -205,22 +228,40 @@
         list-style-type: none;
     }
 
-    img_video_container {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
+
+
+    .img_video_container {
         display: none;
+        position: fixed;
+        z-index: 20202001;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+
+    }
+
+    .btn_close_img_video {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 120px;
+        height: 60px;
+        background-color: #A493F4;
+        border-radius: 30px;
+        text-align: center;
+        line-height: 60px;
+        font-size: large;
+        font-style: normal;
+        color: #fff;
     }
 
 
+
     .videoplayer {
-        max-width: 50%;
-        max-height: 70%;
+        max-width: 80%;
+        max-height: 90%;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -231,21 +272,13 @@
     }
 
     .imgplayer {
-        max-width: 50%;
-        max-height: 70%;
+        max-width: 80%;
+        max-height: 90%;
         position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
         right: 0;
-        margin: auto;
-        display: none;
-    }
-
-
-    btnclose {
-        width: 100px;
-        height: 60px;
         margin: auto;
         display: none;
     }
@@ -287,6 +320,19 @@
         100% {
             transform: rotate(360deg);
         }
+    }
+
+
+    .red-text {
+        color: red;
+    }
+
+    .green-text {
+        color: green;
+    }
+
+    .blue-text {
+        color: blue;
     }
 </style>
 

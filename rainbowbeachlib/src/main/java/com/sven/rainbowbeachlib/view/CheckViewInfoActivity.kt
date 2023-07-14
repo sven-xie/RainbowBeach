@@ -101,13 +101,13 @@ class CheckViewInfoActivity : FragmentActivity() {
 
         getAllViewInfo()
 
-        EasyFloat.hide(FloatService.TAG)
+        EasyFloat.hide(FloatService.FLOAT_TAG)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.show(FloatService.TAG)
+        EasyFloat.show(FloatService.FLOAT_TAG)
     }
 
     private fun getAllViewInfo() {

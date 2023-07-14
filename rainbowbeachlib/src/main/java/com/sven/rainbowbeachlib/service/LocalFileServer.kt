@@ -100,10 +100,6 @@ class LocalFileServer {
             request ?: return@get
             response ?: return@get
             val path = request.query["path"]?.get(0)
-            var dir = File(Environment.getExternalStorageDirectory().path)
-            if (path != null && path.isNotEmpty() && path.startsWith("/")) {
-                dir = File(path)
-            }
             if (path == "images") {
                 getAllFilesByType(response, FILE_TYPE_IMG);
                 return@get
@@ -111,14 +107,18 @@ class LocalFileServer {
                 getAllFilesByType(response, FILE_TYPE_VIDEO);
                 return@get
             }
+            var dir = File(Environment.getExternalStorageDirectory().path)
+            if (path != null && path.isNotEmpty() && path.startsWith("/")) {
+                dir = File(path)
+            }
             val array = JSONArray()
-            val fileNames = dir.list()
-            fileNames?.forEach { fileName ->
-                val file = File(dir, fileName)
+            val fileList = dir.listFiles()
+
+            fileList?.forEach { file ->
                 if (file.exists()) {
                     try {
                         val jsonObject = JSONObject()
-                        jsonObject.put("name", fileName)
+                        jsonObject.put("name", file.name)
                         jsonObject.put("path", file.absolutePath)
                         if (file.isDirectory) {
                             jsonObject.put("type", 3)

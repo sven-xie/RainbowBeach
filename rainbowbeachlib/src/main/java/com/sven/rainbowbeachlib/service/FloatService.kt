@@ -19,6 +19,7 @@ import com.sven.rainbowbeachlib.view.AdbOperationActivity
 import com.sven.rainbowbeachlib.view.CheckViewInfoActivity
 import com.sven.rainbowbeachlib.view.SpManagerActivity
 import java.io.File
+import kotlin.system.exitProcess
 
 /**
  * @Author:         xwp
@@ -38,7 +39,8 @@ class FloatService : Service() {
 
 
     companion object {
-        const val TAG = "FloatService"
+        const val FLOAT_TAG = "FloatService"
+        const val FLOAT_HIDE_TAG = "FloatService_hide"
         const val KEY_INTENT_FLOAT_STATUS = "KEY_INTENT_FLOAT_STATUS"
         const val KEY_INTENT_ADB_COMMAND_STR = "KEY_INTENT_ADB_COMMAND_STR"
         const val KEY_INTENT_FLOAT_SHOW = 0
@@ -77,7 +79,7 @@ class FloatService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.dismiss(TAG)
+        EasyFloat.dismiss(FLOAT_TAG)
         mAdbHelper.stop()
         mLocalFileServer.destroy()
     }
@@ -86,9 +88,9 @@ class FloatService : Service() {
         val status = intent?.getIntExtra(KEY_INTENT_FLOAT_STATUS, KEY_INTENT_FLOAT_SHOW)
             ?: KEY_INTENT_FLOAT_SHOW
         if (status == KEY_INTENT_FLOAT_SHOW) {
-            EasyFloat.show(TAG)
+            EasyFloat.show(FLOAT_TAG)
         } else if (status == KEY_INTENT_FLOAT_HIDE) {
-            EasyFloat.hide(TAG)
+            EasyFloat.hide(FLOAT_TAG)
         }
 
         intent?.getStringExtra(KEY_INTENT_ADB_COMMAND_STR)?.let {
@@ -107,11 +109,34 @@ class FloatService : Service() {
             .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
             .setGravity(
                 0,
-                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 70F),
+                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 60F),
                 100
             )
             .setDragEnable(false)
-            .setTag(TAG)
+            .setTag(FLOAT_TAG)
+
+        val hideRootView =
+            LayoutInflater.from(mContext).inflate(R.layout.float_hide_view_layout, null)
+        EasyFloat.with(mContext) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
+            .setLayout(hideRootView)
+            .setShowPattern(ShowPattern.ALL_TIME)
+            .setMatchParent(false, false) // 设置吸附方式，共15种模式，详情参考SidePattern
+            .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
+            .setGravity(
+                0,
+                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 20F),
+                100
+            )
+            .setDragEnable(false)
+            .setTag(FLOAT_HIDE_TAG)
+            .show()
+
+        hideRootView.setOnClickListener {
+            EasyFloat.show(FLOAT_TAG)
+            EasyFloat.hide(FLOAT_HIDE_TAG)
+        }
+
+        EasyFloat.hide(FLOAT_HIDE_TAG)
 
         easyFloat?.show()
 
@@ -152,8 +177,13 @@ class FloatService : Service() {
         }
 
         mFloatView.findViewById<View>(R.id.btn_exit).setOnClickListener {
-//            EasyFloat.dismiss()
             stopSelf()
+            exitProcess(0)
+        }
+
+        mFloatView.findViewById<View>(R.id.btn_hide).setOnClickListener {
+            EasyFloat.hide(FLOAT_TAG)
+            EasyFloat.show(FLOAT_HIDE_TAG)
         }
     }
 }
