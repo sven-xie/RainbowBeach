@@ -11,17 +11,17 @@
         var lastPathStack = [];
         var isShowImgVideo = false;
 
-        // jQuery(function () {
-        //     $('body').append('<div id="loading" src="/loading.gif" style="display:none;position:fixed;z-index:20202001;top:0;left:0;height:100%;width:100%;background: rgba(0,0,0,0.8) no-repeat fixed center;"></div>');
-
-        // });
-
-
         $(function () {
             hideImgVideoContainer();
             lastPathStack.push("all");
             queryFiles("all");
             initBtnClick();
+        });
+
+        $(document).bind("ajaxSend", function () {
+            showLoading();
+        }).bind("ajaxComplete", function () {
+            hideLoading();
         });
 
         function queryFiles(path) {
@@ -154,26 +154,75 @@
                 }
             });
 
+            $("#btn_upload_file").click(function () {
+                onUpload();
+            });
+
+            $("#btnappdata").click(function () {
+                hideImgVideoContainer();
+                lastPathStack = ["appData"]
+                queryFiles("appData");
+            });
+
+            $("#btnappprivatedata").click(function () {
+                hideImgVideoContainer();
+                lastPathStack = ["appPrivateData"]
+                queryFiles("appPrivateData");
+            });
+
         }
 
 
         function checkAndDownLoadFile(path) {
             var isToDownlaod = confirm("确定要下载该文件吗？");
             if (isToDownlaod) {
-                // var url = 'downloadFile' + '?' + "path=" + path;
                 var url = "/files/" + path;
                 window.open(url);
-                // $.getJSON(url, function (data) {
-                //     console.log(data);
-                //     if (data.code == 404) {
-                //         alert("下载失败");
-                //     }
-                // });
+
             }
         }
 
 
+        function onUpload() {
+            var formData = new FormData();
+            // 获取文件
+            var fileData = $("#file1").prop("files")[0];
+            formData.append("file1", fileData);
+            var url = '/upload-ajax?' + "name=" + fileData.name;
+            $.ajax({
+                url: url,
+                type: 'POST',
+                async: true,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    // 在请求发送之前显示 loading 动画
+                    console.log("onUpload beforeSend");
+                    showLoading();
+                },
+                success: function (data) {
+                    // 处理成功的响应
+                    console.log(data);
+                    hideLoading();
+                    alert(data);
+                },
+                error: function (error) {
+                    // 处理错误的响应
+                    console.error(error);
+                },
+                complete: function () {
+                    // 不论请求成功还是失败，都会执行此函数；用于隐藏 loading 动画
+                    hideLoading();
+                    console.log("onUpload complete");
+                }
+            });
+        }
+
+
         function showLoading() {
+            console.log("showLoading run");
             $("#loading").show();
         }
 
@@ -202,6 +251,13 @@
         <button class="common_btn" id="btnallfile" style="background-color: #555555;">查看所有文件</button>
         <button class="common_btn" id="btnimg" style="background-color: #555555;">查看图片</button>
         <button class="common_btn" id="btnvideo" style="background-color: #555555;">查看视频</button>
+        <button class="common_btn" id="btnappdata" style="background-color: #555555;">查看APP数据</button>
+        <button class="common_btn" id="btnappprivatedata" style="background-color: #555555;">查看APP私有数据</button>
+        <div class="upload_container">
+            <input id="file1" type="file" name="file1" accept="*">
+            <input id="btn_upload_file" type="button" value="上传">
+        </div>
+
         <ul id="filelist" class="img-wrapper"></ul>
         <div id="img_video_container" class="img_video_container">
             <div id="btn_close_img_video" class="btn_close_img_video">关闭</div>
@@ -226,7 +282,7 @@
     }
 
     .common_btn {
-        width: 120px;
+        width: 140px;
         height: 60px;
         text-align: center;
         margin-left: 10px;
@@ -346,6 +402,12 @@
 
     .blue-text {
         color: blue;
+    }
+
+    .upload_container {
+        height: 50px;
+        margin-left: 20px;
+        margin-top: 20px;
     }
 </style>
 

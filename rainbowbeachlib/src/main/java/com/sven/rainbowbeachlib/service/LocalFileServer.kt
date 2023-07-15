@@ -3,9 +3,12 @@ package com.sven.rainbowbeachlib.service
 import android.content.Context
 import android.os.Environment
 import com.koushikdutta.async.AsyncServer
+import com.koushikdutta.async.http.body.MultipartFormDataBody
 import com.koushikdutta.async.http.server.AsyncHttpServer
+import com.koushikdutta.async.http.server.AsyncHttpServerRequest
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse
 import com.sven.rainbowbeachlib.tools.CommonUtils
+import com.sven.rainbowbeachlib.tools.Constants
 import com.sven.rainbowbeachlib.tools.RbbLogUtils
 import com.sven.rainbowbeachlib.tools.RbbUtils
 import org.json.JSONArray
@@ -31,6 +34,7 @@ class LocalFileServer {
     private val server = AsyncHttpServer()
     private val mAsyncServer = AsyncServer()
     private lateinit var mContext: Context
+    private var isRecivedFileData = false
 
     fun start(context: Context) {
         mContext = context
@@ -73,25 +77,28 @@ class LocalFileServer {
             }
         }
 
-        // 上传文件的接口
-        server.get("/updateFile") { request, response ->
-            request ?: return@get
-            response ?: return@get
-            val path = request.query["path"]?.get(0)
-            if (path != null && path.isNotEmpty() && path.startsWith("/")) {
-                val file = File(path);
-                if (file.exists() && file.isFile) {
-                    try {
-                        val fis = FileInputStream(file)
-                        response.sendStream(fis, fis.available().toLong())
-                    } catch (e: Exception) {
-                        e.printStackTrace();
-                    }
-                    return@get;
-                }
+
+        server.post("/upload-ajax") { request, response ->
+            request ?: return@post
+            response ?: return@post
+            val name = request.query["name"]?.get(0)
+            RbbLogUtils.logInfo("upload file name = $name")
+            val uploadFilePath =
+                mContext.externalCacheDir?.absolutePath + Constants.UPLOAD_PATH + name
+            val outputFile =
+                File(uploadFilePath)
+
+            if (outputFile.parentFile?.exists() != true) {
+                //父目录不存在 创建父目录
+                outputFile.parentFile?.mkdirs() != true
             }
-            response.code(404).send("下载失败")
+            if (!outputFile.exists()) {
+                outputFile.createNewFile()
+            }
+
+            handleFileUpload(request, response, outputFile)
         }
+
 
         // 查看图片和视频的接口
         server.get("/files/.*") { request, response ->
@@ -121,19 +128,29 @@ class LocalFileServer {
             request ?: return@get
             response ?: return@get
             val path = request.query["path"]?.get(0)
+            var queryFilePath = Environment.getExternalStorageDirectory().path
+
             if (path == "images") {
                 getAllFilesByType(response, FILE_TYPE_IMG);
                 return@get
             } else if (path == "videos") {
                 getAllFilesByType(response, FILE_TYPE_VIDEO);
                 return@get
+            } else if (path == "appData") {
+                queryFilePath = mContext.externalCacheDir?.parentFile?.absolutePath
+                    ?: Environment.getExternalStorageDirectory().path
+            } else if (path == "appPrivateData") {
+                queryFilePath = mContext.applicationInfo.dataDir
+            } else {
+                if (path != null && path.isNotEmpty() && path.startsWith("/")) {
+                    queryFilePath = path
+                }
             }
-            var dir = File(Environment.getExternalStorageDirectory().path)
-            if (path != null && path.isNotEmpty() && path.startsWith("/")) {
-                dir = File(path)
-            }
+
+            var queryFile = File(queryFilePath)
+
             val array = JSONArray()
-            val fileList = dir.listFiles()
+            val fileList = queryFile.listFiles()
 
             fileList?.forEach { file ->
                 if (file.exists()) {
@@ -164,6 +181,10 @@ class LocalFileServer {
         }
 
         server.listen(mAsyncServer, 9090)
+
+        server.setErrorCallback {
+
+        }
 
         RbbLogUtils.logInfo("文件服务器已启动：http://${CommonUtils.getHostIP()}:9090")
         RbbUtils.showToast(mContext, "文件服务器已启动：http://${CommonUtils.getHostIP()}:9090")
@@ -260,6 +281,41 @@ class LocalFileServer {
                     e.printStackTrace()
                 }
             }
+        }
+    }
+
+
+    private fun handleFileUpload(
+        request: AsyncHttpServerRequest,
+        response: AsyncHttpServerResponse,
+        targetFile: File
+    ) {
+        val outputStream = FileOutputStream(targetFile)
+        val multipartFormDataBody = request.getBody() as MultipartFormDataBody
+        multipartFormDataBody.setMultipartCallback {
+            if (it.isFile) {
+                //  文件
+                multipartFormDataBody.setDataCallback { emitter, bb ->
+                    val bytes = ByteArray(bb.remaining())
+                    RbbLogUtils.logInfo("handleFileUpload len = ${bytes.size}")
+                    bb.get(bytes)
+                    outputStream.write(bytes, 0, bytes.size)
+                    bb.recycle()
+                }
+            } else {
+                // 非文件
+                if (multipartFormDataBody.dataCallback == null) {
+                    multipartFormDataBody.setDataCallback { emitter, bb ->
+                        bb.recycle()
+                    }
+                }
+            }
+        }
+
+        request.setEndCallback {
+            RbbLogUtils.logInfo("handleFileUpload end")
+            response.send("文件上传完毕")
+            response.end()
         }
     }
 }

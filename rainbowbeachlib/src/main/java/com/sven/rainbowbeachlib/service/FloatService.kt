@@ -157,8 +157,9 @@ class FloatService : Service() {
                 RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
             }
-            FileUtils.createFolder(Constants.SCREENSHOT_PATH)
-            mAdbHelper.addCommand("/system/bin/screencap -p " + Constants.SCREENSHOT_PATH + File.separator + System.currentTimeMillis() + ".png")
+            val path = externalCacheDir?.absolutePath + Constants.SCREENSHOT_PATH
+            FileUtils.createFolder(path)
+            mAdbHelper.addCommand("/system/bin/screencap -p " + path + File.separator + System.currentTimeMillis() + ".png")
         }
 
         mFloatView.findViewById<View>(R.id.btn_screen_record).setOnClickListener {
@@ -166,8 +167,9 @@ class FloatService : Service() {
                 RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
             }
-            FileUtils.createFolder(Constants.SCREEN_RECORD_PATH)
-            mAdbHelper.addCommand("screenrecord " + Constants.SCREEN_RECORD_PATH + File.separator + System.currentTimeMillis() + ".mp4")
+            val path = externalCacheDir?.absolutePath + Constants.SCREEN_RECORD_PATH
+            FileUtils.createFolder(path)
+            mAdbHelper.addCommand("screenrecord " + path + File.separator + System.currentTimeMillis() + ".mp4")
         }
 
         mFloatView.findViewById<View>(R.id.btn_adb).setOnClickListener {

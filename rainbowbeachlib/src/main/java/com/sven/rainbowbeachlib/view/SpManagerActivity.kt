@@ -10,6 +10,7 @@ import com.hjq.permissions.XXPermissions
 import com.lzf.easyfloat.EasyFloat
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.service.FloatService
+import com.sven.rainbowbeachlib.tools.Constants.SP_STORE_PATH
 import com.sven.rainbowbeachlib.tools.CopyPasteUtil
 import com.sven.rainbowbeachlib.tools.RbbUtils
 import java.io.File
@@ -20,10 +21,6 @@ import java.io.File
  * @Version:        1.0
  */
 class SpManagerActivity : FragmentActivity() {
-
-    companion object {
-        const val SP_STORE_PATH = "/sdcard/Download/rainbowBeach/spFiles"
-    }
 
     private lateinit var mContext: Context
 
@@ -37,7 +34,8 @@ class SpManagerActivity : FragmentActivity() {
         }
 
         findViewById<View>(R.id.btn_copy_sp_file).setOnClickListener {
-            val file = File(SP_STORE_PATH)
+            val copyStorePath = externalCacheDir?.absolutePath + SP_STORE_PATH;
+            val file = File(copyStorePath)
             if (file.exists()) {
                 if (file.isDirectory) {
                     file.listFiles()?.forEach {
@@ -49,14 +47,20 @@ class SpManagerActivity : FragmentActivity() {
             } else {
                 file.mkdirs()
             }
-            CopyPasteUtil.copyFolder(
+            val success = CopyPasteUtil.copyFolder(
                 mContext.applicationInfo.dataDir + "/shared_prefs",
-                SP_STORE_PATH
+                copyStorePath
             )
+            if (success) {
+                RbbUtils.showToast(mContext, "拷贝成功")
+            } else {
+                RbbUtils.showToast(mContext, "拷贝失败")
+            }
         }
 
         findViewById<View>(R.id.btn_restore_sp_file).setOnClickListener {
-            val file = File(SP_STORE_PATH)
+            val copyStorePath = externalCacheDir?.absolutePath + SP_STORE_PATH;
+            val file = File(copyStorePath)
             if (!file.exists() || file.listFiles() == null || file.listFiles().isEmpty()) {
                 RbbUtils.showToast(mContext, "SP文件未找到");
                 return@setOnClickListener
@@ -73,13 +77,19 @@ class SpManagerActivity : FragmentActivity() {
             } else {
                 targetFile.mkdirs()
             }
-            CopyPasteUtil.copyFolder(
-                SP_STORE_PATH,
+            val success = CopyPasteUtil.copyFolder(
+                copyStorePath,
                 mContext.applicationInfo.dataDir + "/shared_prefs"
             )
+
+            if (success) {
+                RbbUtils.showToast(mContext, "还原成功")
+            } else {
+                RbbUtils.showToast(mContext, "还原失败")
+            }
         }
 
-        checkSdPermission()
+//        checkSdPermission()
 
         EasyFloat.hide(FloatService.FLOAT_TAG)
     }

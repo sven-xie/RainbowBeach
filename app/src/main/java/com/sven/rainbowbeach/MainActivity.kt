@@ -1,6 +1,7 @@
 package com.sven.rainbowbeach
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -31,6 +32,11 @@ class MainActivity : AppCompatActivity() {
                 RainbowBeach.start(this)
             }
         }
+
+        val sp: SharedPreferences = getSharedPreferences("test_sp", MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sp.edit()
+        editor.putString("data", "我是Rocky111")
+        editor.commit()
     }
 
     override fun onResume() {

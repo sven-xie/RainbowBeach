@@ -22,4 +22,9 @@ object RbbUtils {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+
+    fun logInfo(message: String) {
+        Log.i("RainbowBeach", message)
+    }
+
 }
