@@ -1,6 +1,29 @@
 # Rainbow Beach Tools
 
 
+
+一个安卓手机开发者工具类。主要包含以下几点功能特色：
+
+- 查看和管理手机存储
+- 查看页面View树布局信息
+- 支持手机上运行ADB命令，一键截图、录屏
+
+
+
+## 怎么用
+
+1. 添加下面依赖，最新版1.0.4；
+
+2. 调用方法 RainbowBeach.start(activity)
+
+   
+
+```groovy
+dependencies {
+	        implementation 'com.github.sven-xie:RainbowBeach:Tag'
+	}
+```
+
 一个安卓手机开发者工具类。主要包含以下几点功能特色：
 
 
