@@ -29,6 +29,7 @@ class LocalFileServer {
     companion object {
         const val FILE_TYPE_IMG = 1
         const val FILE_TYPE_VIDEO = 2
+        const val PORT = 1234
     }
 
     private val server = AsyncHttpServer()
@@ -182,14 +183,14 @@ class LocalFileServer {
             response.send(array.toString())
         }
 
-        server.listen(mAsyncServer, 9090)
+        server.listen(mAsyncServer, PORT)
 
         server.setErrorCallback {
 
         }
 
-        RbbLogUtils.logInfo("文件服务器已启动：http://${CommonUtils.getHostIP()}:9090")
-        RbbUtils.showToast(mContext, "文件服务器已启动：http://${CommonUtils.getHostIP()}:9090")
+        RbbLogUtils.logInfo("文件服务器已启动：http://${CommonUtils.getHostIP()}:$PORT")
+        RbbUtils.showToast(mContext, "文件服务器已启动：http://${CommonUtils.getHostIP()}:$PORT")
     }
 
     private fun getAllFilesByType(response: AsyncHttpServerResponse, fileType: Int) {
