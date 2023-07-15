@@ -17,9 +17,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val testFragment = TestFragment()
+        val testFragment1 = TestFragment()
+        val testFragment2 = TestFragment()
         val beginTransaction = supportFragmentManager.beginTransaction()
-        beginTransaction.add(R.id.fl_test_fragment, testFragment)
+        beginTransaction.add(R.id.fl_test_fragment_1, testFragment1)
+        beginTransaction.add(R.id.fl_test_fragment_2, testFragment2)
 //        beginTransaction.hide(testFragment)
         beginTransaction.commitAllowingStateLoss()
 
