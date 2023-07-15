@@ -151,7 +151,9 @@ class LocalFileServer {
 
             val array = JSONArray()
             val fileList = queryFile.listFiles()
-
+            fileList.sortBy {
+                it.name
+            }
             fileList?.forEach { file ->
                 if (file.exists()) {
                     try {

@@ -48,7 +48,7 @@
                         } else {
                             namePreStr = "【文件】"
                         }
-                        var $li = $('<li>' + namePreStr + "  " + data[i].name + nameEndStr + '</li>');
+                        var $li = $('<li><a>' + namePreStr + "  " + data[i].name + nameEndStr + '</a></li>');
                         $li.attr("path", data[i].path);
                         $li.attr("type", data[i].type);
                         $("#filelist").append($li);
@@ -79,6 +79,7 @@
                     }
                 }
                 hideLoading();
+                refreshTitleName();
             });
         };
 
@@ -88,6 +89,7 @@
                 $("#videoplayer").css("display", "block");
                 isShowImgVideo = true;
                 document.getElementById("btnback").innerHTML = "关闭视频";
+
             } else {
                 $("#videoplayer").css("display", "none");
             }
@@ -110,6 +112,9 @@
             $("#imgplayer").css("display", "none");
             $("#videoplayer").css("display", "none");
             $("#btnclose").css("display", "none");
+            $("#upload_container").css("display", "none");
+            // $("#file1").css("display", "none");
+            // $("#btn_upload_file").css("display", "none");
             isShowImgVideo = false;
             document.getElementById("btnback").innerHTML = "后退";
         }
@@ -138,13 +143,13 @@
 
             $("#btnimg").click(function () {
                 hideImgVideoContainer();
-                lastPathStack = []
+                lastPathStack = ["images"]
                 queryFiles("images");
             });
 
             $("#btnvideo").click(function () {
                 hideImgVideoContainer();
-                lastPathStack = []
+                lastPathStack = ["videos"]
                 queryFiles("videos");
             });
 
@@ -206,6 +211,7 @@
                     // 处理成功的响应
                     console.log(data);
                     hideLoading();
+                    hideImgVideoContainer();
                     alert(data);
                 },
                 error: function (error) {
@@ -221,6 +227,18 @@
         }
 
 
+        function onRefresh() {
+            var lastpathTemp = lastPathStack[lastPathStack.length - 1];
+            queryFiles(lastpathTemp)
+        }
+
+        function onShowUploadFile() {
+            $("#upload_container").css("display", "flex");
+            $("#file1").css("display", "block");
+            $("#btn_upload_file").css("display", "block");
+        }
+
+
         function showLoading() {
             console.log("showLoading run");
             $("#loading").show();
@@ -231,39 +249,90 @@
         }
 
 
+        function refreshTitleName() {
+            var targetName = lastPathStack[lastPathStack.length - 1]
+            // var targetName = ""
+            // lastPathStack.forEach(function (item, index) {
+            if (targetName == "all") {
+                targetName = "全部文件目录"
+            } else if (targetName == "images") {
+                targetName = "全部图片文件"
+            } else if (targetName == "videos") {
+                targetName = "全部视频文件"
+            } else if (targetName == "appData") {
+                targetName = "APP数据目录"
+            } else if (targetName == "appPrivateData") {
+                targetName = "APP私有数据目录"
+            }
+            // else {
+            //     targetName += " >> " + item
+            // }
+            // });
+            console.log("targetName=" + targetName)
+            document.getElementById("footer_title_tv").innerHTML = targetName;
+        }
+
 
     </script>
 </head>
 
-<body>
-    <div id="root_container">
-        <p style="margin-left: 20px; margin-top: 10px; font-size: 20px">
-            <span style="color: #FF0000;">彩</span>
-            <span style="color: #FF7F00;">虹</span>
-            <span style="color: #FFFF00;">沙</span>
-            <span style="color: #00FF00;">滩</span>
-            <span style="color: #00FFFF;">开</span>
-            <span style="color: #0000FF;">发</span>
-            <span style="color: #8B00FF;">助</span>
-            <span style="color: #000000;">手</span>
-        </p>
-        <button class="common_btn" id="btnback" type="button" style="background-color: #555555;">后退</button>
-        <button class="common_btn" id="btnallfile" style="background-color: #555555;">查看所有文件</button>
-        <button class="common_btn" id="btnimg" style="background-color: #555555;">查看图片</button>
-        <button class="common_btn" id="btnvideo" style="background-color: #555555;">查看视频</button>
-        <button class="common_btn" id="btnappdata" style="background-color: #555555;">查看APP数据</button>
-        <button class="common_btn" id="btnappprivatedata" style="background-color: #555555;">查看APP私有数据</button>
-        <div class="upload_container">
-            <input id="file1" type="file" name="file1" accept="*">
-            <input id="btn_upload_file" type="button" value="上传">
+<body id="root_container">
+    <footer>
+        <div class="footer_container">
+            <button class=" common_btn" id="btnback" type="button" ">后退</button>
+                <button class=" common_btn" id="btnrefresh" type="button" onclick="onRefresh()">刷新</button>
+            <div id="footer_title_tv"
+                style="margin-left: 20px; font-size: 20px; color: #000; height: 40px; text-align: center; line-height: 40px;">
+                所有文件
+            </div>
         </div>
+    </footer>
 
-        <ul id="filelist" class="img-wrapper"></ul>
+    <header class="head_container">
+        <div class="head_container_title">
+            <div style="margin-left: 20px; font-size: 30px; color: #fff;">
+                Rainbow Beach Tools
+                <!-- <span style="color: #FF0000;">彩</span>
+                <span style="color: #FF7F00;">虹</span>
+                <span style="color: #FFFF00;">沙</span>
+                <span style="color: #00FF00;">滩</span>
+                <span style="color: #00FFFF;">开</span>
+                <span style="color: #0000FF;">发</span>
+                <span style="color: #8B00FF;">助</span>
+                <span style="color: #000000;">手</span> -->
+            </div>
+            <div class="header_btn_container">
+                <button class=" common_btn" id="btnallfile" ">查看所有文件</button>
+                <button class=" common_btn" id="btnimg" ">查看图片</button>
+                <button class=" common_btn" id="btnvideo" ">查看视频</button>
+                <button class=" common_btn" id="btnappdata" ">查看APP数据</button>
+                <button class=" common_btn" id="btnappprivatedata" ">查看APP私有数据</button>
+                <button class=" common_btn" id="btnToUpload" onclick="onShowUploadFile()">上传文件</button>
+            </div>
+
+        </div>
+        <div id="upload_container" class="upload_container">
+            <div class="btn_close_img_video" onclick="hideImgVideoContainer()" style="margin-top: 70px;">关闭</div>
+            <div class="upload_content_container">
+                <div class="file_container">
+                    <input id="file1" type="file" name="file1" accept="*">
+                </div>
+                <input id="btn_upload_file" class="common_btn" type="button"
+                    style="width: 30%; height: 60px; font-size: 20px;" value="上传">
+            </div>
+        </div>
+    </header>
+    <div class=" content_container">
+
+        <ul id="filelist" class="img-wrapper">
+        </ul>
         <div id="img_video_container" class="img_video_container">
             <div id="btn_close_img_video" class="btn_close_img_video">关闭</div>
             <video class="videoplayer" id="videoplayer" controls="controls"></video>
             <img class="imgplayer" id="imgplayer" controls="controls"></img>
         </div>
+
+
 
         <div id="loading" class="loading_container">
             <div class="loading">
@@ -272,29 +341,121 @@
         </div>
     </div>
 
+
 </body>
 
 <style>
-    root_container {
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
         width: 100%;
         height: 100%;
         background-color: #fff;
+        position: relative;
+    }
+
+    .head_container {
+        height: max-content;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+        background: #2c2c2c;
+        color: white;
+        line-height: 80px;
+        transition: .3s ease;
+    }
+
+    .head_container_title {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .header_btn_container {
+        margin-right: 20px;
+    }
+
+    .footer_container {
+        height: max-content;
+        width: 100%;
+        padding: 0px;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        margin-left: 30px;
+        z-index: 10000;
+        background: #fff;
+        color: white;
+        line-height: 50px;
+        transition: .3s ease;
+        display: flex;
+        flex-direction: row;
+        justify-content: baseline;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .content_container {
+        margin-bottom: 80px;
+        margin-top: 160px;
     }
 
     .common_btn {
-        width: 140px;
-        height: 60px;
+        width: auto;
+        height: 40px;
+        padding-left: 30px;
+        padding-right: 30px;
         text-align: center;
         margin-left: 10px;
         color: #fff;
-        background-color: #555555;
+        background-color: #A493F4;
+        border-radius: 30px;
+        border: none;
+        text-align: center;
+        line-height: 40px;
+        font-size: 14px;
+        font-style: normal;
+        color: #fff;
     }
 
+    .common_btn:hover {
+        background-color: #8B00FF;
+        transition: 0.7s;
+    }
 
     ul {
         width: max-content;
         max-width: 50%;
         list-style-type: none;
+        margin-left: 50px;
+    }
+
+    li {
+        padding: 5px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    li a {
+        text-decoration: none;
+        color: #000;
+        display: block;
+        -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+        -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+        transition: font-size 0.3s ease, background-color 0.3s ease;
+    }
+
+    li a:hover {
+        background: #f6f6f6;
     }
 
 
@@ -313,14 +474,16 @@
 
     .btn_close_img_video {
         position: absolute;
-        right: 10px;
-        top: 10px;
-        width: 120px;
-        height: 60px;
-        background-color: #A493F4;
+        right: 15px;
+        top: 15px;
+        width: auto;
+        height: 50px;
+        padding-left: 50px;
+        padding-right: 50px;
+        background-color: red;
         border-radius: 30px;
         text-align: center;
-        line-height: 60px;
+        line-height: 50px;
         font-size: large;
         font-style: normal;
         color: #fff;
@@ -405,9 +568,59 @@
     }
 
     .upload_container {
+        display: none;
+        height: 100%;
+        width: 100%;
+    }
+
+    .upload_content_container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 20px 30px 100px 100px;
+    }
+
+    .file_container {
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        width: 40%;
         height: 50px;
-        margin-left: 20px;
-        margin-top: 20px;
+        margin: 40px 10px;
+    }
+
+    .file_container input {
+        color: gray;
+        font-size: px;
+    }
+
+    ::file-selector-button {
+        font-size: 14px;
+        color: #fff;
+        border-radius: 5px;
+        border: 1px solid #2a80eb;
+        padding: 8px 12px;
+        background-color: #2a80eb;
+        cursor: pointer;
+    }
+
+    .file_container:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
     }
 </style>
 
