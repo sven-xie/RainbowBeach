@@ -276,6 +276,10 @@
             document.getElementById("footer_title_tv").innerHTML = targetName;
         }
 
+        function onJumpToGithub() {
+            window.open("https://github.com/sven-xie/RainbowBeach");
+        }
+
 
     </script>
 </head>
@@ -294,25 +298,29 @@
 
     <header class="head_container">
         <div class="head_container_title">
-            <div style="margin-left: 20px; font-size: 30px; color: #fff;">
-                Rainbow Beach Tools
-                <!-- <span style="color: #FF0000;">R</span>
-                <span style="color: #FF7F00;">a</span>
-                <span style="color: #FFFF00;">i</span>
-                <span style="color: #00FF00;">n</span>
-                <span style="color: #00FFFF;">b</span>
-                <span style="color: #0000FF;">o</span>
-                <span style="color: #0000FF;">w</span>
-                <span style="color: #8B00FF;">B</span>
-                <span style="color: #FF0000;">e</span>
-                <span style="color: #FF7F00;">a</span>
-                <span style="color: #FFFF00;">c</span>
-                <span style="color: #00FF00;">h</span>
-                <span style="color: #00FFFF;">T</span>
-                <span style="color: #0000FF;">o</span>
-                <span style="color: #8B00FF;">o</span>
-                <span style="color: #FF0000;">l</span>
-                <span style="color: #FF7F00;">s</span> -->
+            <div style="display: flex;flex-direction: row;justify-content: center;">
+                <div style="margin-left: 20px; font-size: 30px; color: #fff; text-align: center;line-height: 30px;">
+                    Rainbow Beach Tools
+                    <!-- <span style="color: #FF0000;">R</span>
+                    <span style="color: #FF7F00;">a</span>
+                    <span style="color: #FFFF00;">i</span>
+                    <span style="color: #00FF00;">n</span>
+                    <span style="color: #00FFFF;">b</span>
+                    <span style="color: #0000FF;">o</span>
+                    <span style="color: #0000FF;">w</span>
+                    <span style="color: #8B00FF;">B</span>
+                    <span style="color: #FF0000;">e</span>
+                    <span style="color: #FF7F00;">a</span>
+                    <span style="color: #FFFF00;">c</span>
+                    <span style="color: #00FF00;">h</span>
+                    <span style="color: #00FFFF;">T</span>
+                    <span style="color: #0000FF;">o</span>
+                    <span style="color: #8B00FF;">o</span>
+                    <span style="color: #FF0000;">l</span>
+                    <span style="color: #FF7F00;">s</span> -->
+                </div>
+                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    style="height: 30px;height: 30px;margin-left: 20px; text-align: center;" onclick="onJumpToGithub()">
             </div>
             <div class="header_btn_container">
                 <button class=" common_btn" id="btnallfile" ">查看所有文件</button>
@@ -390,6 +398,9 @@
         display: flex;
         justify-content: space-between;
         flex-direction: row;
+        align-items: center;
+        text-align: center;
+        vertical-align: middle;
     }
 
     .header_btn_container {
