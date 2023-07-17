@@ -54,14 +54,14 @@ object RainbowBeach {
             }
 
             override fun onActivityPaused(activity: Activity) {
-                topActivity = null
-                if (!activity::class.java.name.contains(ACTIVITY_FILTER_NAME_PRE)) {
-                    currentNeedCheckActivity = null
-                }
             }
 
             override fun onActivityStopped(activity: Activity) {
-
+                topActivity = null
+                if (!activity::class.java.name.contains(ACTIVITY_FILTER_NAME_PRE)) {
+                    RbbLogUtils.logInfo("RainbowBeach onActivityPaused activity = $activity")
+                    currentNeedCheckActivity = null
+                }
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
