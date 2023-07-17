@@ -33,9 +33,6 @@ class FloatService : Service() {
     private val mAdbHelper by lazy {
         AdbHelper()
     }
-    private val mLocalFileServer by lazy {
-        LocalFileServer()
-    }
 
 
     companion object {
@@ -73,25 +70,25 @@ class FloatService : Service() {
         super.onCreate()
         mContext = this
         showFloatView()
-        mAdbHelper.start(mContext)
-        mLocalFileServer.start(mContext)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         EasyFloat.dismiss(FLOAT_TAG)
+        EasyFloat.dismiss(FLOAT_HIDE_TAG)
         mAdbHelper.stop()
-        mLocalFileServer.destroy()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val status = intent?.getIntExtra(KEY_INTENT_FLOAT_STATUS, KEY_INTENT_FLOAT_SHOW)
             ?: KEY_INTENT_FLOAT_SHOW
         if (status == KEY_INTENT_FLOAT_SHOW) {
+            EasyFloat.hide(FLOAT_HIDE_TAG)
             EasyFloat.show(FLOAT_TAG)
         } else if (status == KEY_INTENT_FLOAT_HIDE) {
             EasyFloat.hide(FLOAT_TAG)
         }
+        mAdbHelper.start(mContext)
 
         intent?.getStringExtra(KEY_INTENT_ADB_COMMAND_STR)?.let {
             mAdbHelper.addCommand(it)

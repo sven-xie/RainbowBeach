@@ -8,7 +8,6 @@ import android.provider.Settings
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sven.rainbowbeach.view.TestFragment
-import com.sven.rainbowbeachlib.RainbowBeach
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -27,11 +26,9 @@ class MainActivity : AppCompatActivity() {
 
         if (checkOverlayPermission(this)) {
             btn_open_float_permission.visibility = View.GONE
-            RainbowBeach.start(this)
         } else {
             btn_open_float_permission.visibility = View.VISIBLE
             btn_open_float_permission.setOnClickListener {
-                RainbowBeach.start(this)
             }
         }
 

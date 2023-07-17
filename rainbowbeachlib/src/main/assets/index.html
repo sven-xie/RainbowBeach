@@ -280,6 +280,14 @@
             window.open("https://github.com/sven-xie/RainbowBeach");
         }
 
+        function checkPermission() {
+            console.log("checkPermission");
+            var url = '/check-permission';
+            $.getJSON(url, function (data) {
+
+            });
+        }
+
 
     </script>
 </head>
@@ -329,6 +337,7 @@
                 <button class=" common_btn" id="btnappdata" ">查看APP数据</button>
                 <button class=" common_btn" id="btnappprivatedata" ">查看APP私有数据</button>
                 <button class=" common_btn" id="btnToUpload" onclick="onShowUploadFile()">上传文件</button>
+                <button class=" common_btn" onclick="checkPermission()">申请权限/打开浮窗</button>
             </div>
 
         </div>

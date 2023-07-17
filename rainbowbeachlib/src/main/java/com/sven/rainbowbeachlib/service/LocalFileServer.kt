@@ -1,16 +1,18 @@
 package com.sven.rainbowbeachlib.service
 
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
 import com.koushikdutta.async.AsyncServer
 import com.koushikdutta.async.http.body.MultipartFormDataBody
 import com.koushikdutta.async.http.server.AsyncHttpServer
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse
+import com.sven.rainbowbeachlib.RainbowBeach
 import com.sven.rainbowbeachlib.tools.CommonUtils
 import com.sven.rainbowbeachlib.tools.Constants
 import com.sven.rainbowbeachlib.tools.RbbLogUtils
-import com.sven.rainbowbeachlib.tools.RbbUtils
+import com.sven.rainbowbeachlib.view.StartActivity
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -76,6 +78,13 @@ class LocalFileServer {
                 e.printStackTrace();
                 response.code(404).end();
             }
+        }
+
+        server.get("/check-permission") { request, response ->
+            RainbowBeach.topActivity?.let {
+                it.startActivity(Intent(it, StartActivity::class.java))
+            }
+            response.code(200).send("checked")
         }
 
 
@@ -189,8 +198,8 @@ class LocalFileServer {
 
         }
 
-        RbbLogUtils.logInfo("文件服务器已启动：http://${CommonUtils.getHostIP()}:$PORT")
-        RbbUtils.showToast(mContext, "文件服务器已启动：http://${CommonUtils.getHostIP()}:$PORT")
+        RbbLogUtils.logInfo("RainbowBeachTools已启动：http://${CommonUtils.getHostIP()}:$PORT")
+//        RbbUtils.showToast(mContext, "文件服务器已启动：http://${CommonUtils.getHostIP()}:$PORT")
     }
 
     private fun getAllFilesByType(response: AsyncHttpServerResponse, fileType: Int) {

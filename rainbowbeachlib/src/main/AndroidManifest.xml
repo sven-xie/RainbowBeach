@@ -5,6 +5,12 @@
 
     <application android:requestLegacyExternalStorage="true">
 
+        <provider
+            android:name="com.sven.rainbowbeachlib.service.RainbowBeachInitProvider"
+            android:authorities="${applicationId}.RainbowBeachInitProvider"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".view.StartActivity"
             android:launchMode="singleInstance"

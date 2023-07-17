@@ -3,10 +3,10 @@ package com.sven.rainbowbeachlib
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
+import com.sven.rainbowbeachlib.service.LocalFileServer
 import com.sven.rainbowbeachlib.tools.RbbLogUtils
-import com.sven.rainbowbeachlib.view.StartActivity
 
 /**
  * @Author:         xwp
@@ -16,15 +16,22 @@ import com.sven.rainbowbeachlib.view.StartActivity
 
 @SuppressLint("StaticFieldLeak")
 object RainbowBeach {
-    var topActivity: Activity? = null
 
-    fun start(activity: Activity) {
-        registerActivityListener(activity.application)
-        activity.startActivity(Intent(activity, StartActivity::class.java))
+    const val ACTIVITY_FILTER_NAME_PRE = "com.sven.rainbowbeachlib"
+
+    var currentNeedCheckActivity: Activity? = null
+    var topActivity: Activity? = null
+    private val mLocalFileServer by lazy {
+        LocalFileServer()
     }
 
-    fun stop() {
-        topActivity = null
+
+    fun start(context: Context) {
+        val applicationContext: Context = context.applicationContext
+        if (applicationContext is Application) {
+            registerActivityListener(applicationContext)
+        }
+        mLocalFileServer.start(context)
     }
 
 
@@ -39,14 +46,18 @@ object RainbowBeach {
             }
 
             override fun onActivityResumed(activity: Activity) {
-                if (!activity::class.java.name.contains("com.sven.rainbowbeachlib")) {
+                topActivity = activity
+                if (!activity::class.java.name.contains(ACTIVITY_FILTER_NAME_PRE)) {
                     RbbLogUtils.logInfo("RainbowBeach onActivityResumed activity = $activity")
-                    topActivity = activity
+                    currentNeedCheckActivity = activity
                 }
             }
 
             override fun onActivityPaused(activity: Activity) {
-
+                topActivity = null
+                if (!activity::class.java.name.contains(ACTIVITY_FILTER_NAME_PRE)) {
+                    currentNeedCheckActivity = null
+                }
             }
 
             override fun onActivityStopped(activity: Activity) {
