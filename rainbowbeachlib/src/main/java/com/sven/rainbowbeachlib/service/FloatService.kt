@@ -3,12 +3,14 @@ package com.sven.rainbowbeachlib.service
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
+import android.os.Build
 import android.os.IBinder
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import com.lzf.easyfloat.EasyFloat
-import com.lzf.easyfloat.enums.ShowPattern
-import com.lzf.easyfloat.enums.SidePattern
+import android.view.WindowManager
+import android.widget.FrameLayout
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.adblib.AdbHelper
 import com.sven.rainbowbeachlib.tools.Constants
@@ -29,10 +31,12 @@ import kotlin.system.exitProcess
 class FloatService : Service() {
 
     private lateinit var mContext: Context;
-    private var easyFloat: EasyFloat.Builder? = null
     private val mAdbHelper by lazy {
         AdbHelper()
     }
+    private var mCurrentFloatView: View? = null
+    private lateinit var floatView: View
+    private lateinit var hideFloatView: View
 
 
     companion object {
@@ -74,8 +78,6 @@ class FloatService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.dismiss(FLOAT_TAG)
-        EasyFloat.dismiss(FLOAT_HIDE_TAG)
         mAdbHelper.stop()
     }
 
@@ -83,10 +85,9 @@ class FloatService : Service() {
         val status = intent?.getIntExtra(KEY_INTENT_FLOAT_STATUS, KEY_INTENT_FLOAT_SHOW)
             ?: KEY_INTENT_FLOAT_SHOW
         if (status == KEY_INTENT_FLOAT_SHOW) {
-            EasyFloat.hide(FLOAT_HIDE_TAG)
-            EasyFloat.show(FLOAT_TAG)
+            showFloatView(floatView, DisplayUtil.dip2px(mContext, 60F))
         } else if (status == KEY_INTENT_FLOAT_HIDE) {
-            EasyFloat.hide(FLOAT_TAG)
+            showFloatView(hideFloatView, DisplayUtil.dip2px(mContext, 20F))
         }
         mAdbHelper.start(mContext)
 
@@ -97,59 +98,31 @@ class FloatService : Service() {
     }
 
     private fun showFloatView() {
-        val mFloatView =
+        floatView =
             LayoutInflater.from(mContext).inflate(R.layout.float_view_layout, null)
-        easyFloat = EasyFloat.with(mContext) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
-            .setLayout(mFloatView)
-            .setShowPattern(ShowPattern.ALL_TIME)
-            .setMatchParent(false, false) // 设置吸附方式，共15种模式，详情参考SidePattern
-            .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
-            .setGravity(
-                0,
-                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 60F),
-                100
-            )
-            .setDragEnable(false)
-            .setTag(FLOAT_TAG)
+        showFloatView(floatView, DisplayUtil.dip2px(mContext, 60F))
 
-        val hideRootView =
+        hideFloatView =
             LayoutInflater.from(mContext).inflate(R.layout.float_hide_view_layout, null)
-        EasyFloat.with(mContext) // 设置浮窗xml布局文件/自定义View，并可设置详细信息
-            .setLayout(hideRootView)
-            .setShowPattern(ShowPattern.ALL_TIME)
-            .setMatchParent(false, false) // 设置吸附方式，共15种模式，详情参考SidePattern
-            .setSidePattern(SidePattern.DEFAULT) // 设置浮窗的标签，用于区分多个浮窗
-            .setGravity(
-                0,
-                DisplayUtil.getScreenWidth(mContext) - DisplayUtil.dip2px(mContext, 20F),
-                100
-            )
-            .setDragEnable(false)
-            .setTag(FLOAT_HIDE_TAG)
-            .show()
 
-        hideRootView.setOnClickListener {
-            EasyFloat.show(FLOAT_TAG)
-            EasyFloat.hide(FLOAT_HIDE_TAG)
+        hideFloatView.setOnClickListener {
+            showFloatView(floatView, DisplayUtil.dip2px(mContext, 60F))
         }
 
-        EasyFloat.hide(FLOAT_HIDE_TAG)
 
-        easyFloat?.show()
-
-        mFloatView.findViewById<View>(R.id.btn_query_view_id).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_query_view_id).setOnClickListener {
             val intent = Intent(mContext, CheckViewInfoActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        mFloatView.findViewById<View>(R.id.btn_sp_manager).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_sp_manager).setOnClickListener {
             val intent = Intent(mContext, SpManagerActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        mFloatView.findViewById<View>(R.id.btn_screen_shot).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_screen_shot).setOnClickListener {
             if (!mAdbHelper.isConnected()) {
                 RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
@@ -159,7 +132,7 @@ class FloatService : Service() {
             mAdbHelper.addCommand("/system/bin/screencap -p " + path + File.separator + System.currentTimeMillis() + ".png")
         }
 
-        mFloatView.findViewById<View>(R.id.btn_screen_record).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_screen_record).setOnClickListener {
             if (!mAdbHelper.isConnected()) {
                 RbbUtils.showToast(mContext, "adb未连接")
                 return@setOnClickListener
@@ -169,20 +142,43 @@ class FloatService : Service() {
             mAdbHelper.addCommand("screenrecord " + path + File.separator + System.currentTimeMillis() + ".mp4")
         }
 
-        mFloatView.findViewById<View>(R.id.btn_adb).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_adb).setOnClickListener {
             val intent = Intent(mContext, AdbOperationActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        mFloatView.findViewById<View>(R.id.btn_exit).setOnClickListener {
+        floatView.findViewById<View>(R.id.btn_exit).setOnClickListener {
             stopSelf()
             exitProcess(0)
         }
 
-        mFloatView.findViewById<View>(R.id.btn_hide).setOnClickListener {
-            EasyFloat.hide(FLOAT_TAG)
-            EasyFloat.show(FLOAT_HIDE_TAG)
+        floatView.findViewById<View>(R.id.btn_hide).setOnClickListener {
+            showFloatView(hideFloatView, DisplayUtil.dip2px(mContext, 20F))
         }
+    }
+
+
+    private fun showFloatView(floatView: View, floatViewWidth: Int) {
+        val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        mCurrentFloatView?.let {
+            windowManager.removeView(it)
+        }
+        val layoutParams = WindowManager.LayoutParams()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE
+        }
+        layoutParams.format = PixelFormat.RGBA_8888
+        layoutParams.gravity = Gravity.LEFT or Gravity.TOP
+        layoutParams.flags =
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        layoutParams.width = FrameLayout.LayoutParams.WRAP_CONTENT
+        layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+        layoutParams.x = DisplayUtil.getScreenWidth(mContext) - floatViewWidth
+        layoutParams.y = 100
+        windowManager.addView(floatView, layoutParams)
+        mCurrentFloatView = floatView
     }
 }

@@ -4,10 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentActivity
-import com.hjq.permissions.OnPermissionCallback
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
-import com.lzf.easyfloat.EasyFloat
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.service.FloatService
 import com.sven.rainbowbeachlib.tools.Constants.SP_STORE_PATH
@@ -91,26 +87,12 @@ class SpManagerActivity : FragmentActivity() {
 
 //        checkSdPermission()
 
-        EasyFloat.hide(FloatService.FLOAT_TAG)
+        FloatService.hideFloatView(mContext)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.show(FloatService.FLOAT_TAG)
-    }
-
-    private fun checkSdPermission() {
-        XXPermissions.with(this) //申请悬浮窗权限
-            .permission(Permission.READ_EXTERNAL_STORAGE)
-            .permission(Permission.WRITE_EXTERNAL_STORAGE)
-            .request(object : OnPermissionCallback {
-                override fun onGranted(permissions: List<String?>?, all: Boolean) {
-                }
-
-                override fun onDenied(permissions: List<String?>?, never: Boolean) {
-                    RbbUtils.showToast(mContext, "请允许存储卡读写权限")
-                }
-            })
+        FloatService.showFloatView(mContext)
     }
 }

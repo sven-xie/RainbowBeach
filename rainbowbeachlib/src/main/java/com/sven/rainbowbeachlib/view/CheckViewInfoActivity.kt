@@ -12,7 +12,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lzf.easyfloat.EasyFloat
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.bean.ViewDetailInfoBean
 import com.sven.rainbowbeachlib.bean.ViewInfoBean
@@ -101,13 +100,13 @@ class CheckViewInfoActivity : FragmentActivity() {
 
         getAllViewInfo()
 
-        EasyFloat.hide(FloatService.FLOAT_TAG)
+        FloatService.hideFloatView(mContext)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.show(FloatService.FLOAT_TAG)
+        FloatService.showFloatView(mContext)
     }
 
     private fun getAllViewInfo() {

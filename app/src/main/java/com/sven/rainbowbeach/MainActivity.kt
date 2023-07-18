@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             btn_open_float_permission.visibility = View.VISIBLE
             btn_open_float_permission.setOnClickListener {
+
             }
         }
 

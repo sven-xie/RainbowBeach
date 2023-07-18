@@ -32,11 +32,15 @@ object ViewInfoUtils {
                 }
             }
         }
+
+        allViewInfo?.sortBy {
+            it.rect.height() * it.rect.width()
+        }
         return allViewInfo
     }
 
     fun getAllViewInfo(): MutableList<ViewInfoBean>? {
-        val activity = RainbowBeach.currentNeedCheckActivity
+        val activity = RainbowBeach.getCurrentNeedCheckActivity()
         activity ?: return null
         RbbLogUtils.logInfo("getViewInfo start >>> ")
         lastTime = System.currentTimeMillis()

@@ -37,7 +37,6 @@ class LocalFileServer {
     private val server = AsyncHttpServer()
     private val mAsyncServer = AsyncServer()
     private lateinit var mContext: Context
-    private var isRecivedFileData = false
 
     fun start(context: Context) {
         mContext = context
@@ -81,7 +80,7 @@ class LocalFileServer {
         }
 
         server.get("/check-permission") { request, response ->
-            RainbowBeach.topActivity?.let {
+            RainbowBeach.getTopActivity()?.let {
                 it.startActivity(Intent(it, StartActivity::class.java))
             }
             response.code(200).send("checked")

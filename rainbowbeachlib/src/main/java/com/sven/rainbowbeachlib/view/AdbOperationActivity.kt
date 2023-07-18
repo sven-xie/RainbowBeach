@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.fragment.app.FragmentActivity
-import com.lzf.easyfloat.EasyFloat
 import com.sven.rainbowbeachlib.R
 import com.sven.rainbowbeachlib.service.FloatService
 
@@ -39,12 +38,12 @@ class AdbOperationActivity : FragmentActivity() {
             mEditAdb.setText("")
         }
 
-        EasyFloat.hide(FloatService.FLOAT_TAG)
+        FloatService.hideFloatView(mContext)
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        EasyFloat.show(FloatService.FLOAT_TAG)
+        FloatService.showFloatView(mContext)
     }
 }
