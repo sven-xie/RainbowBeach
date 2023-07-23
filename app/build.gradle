@@ -45,5 +45,4 @@ dependencies {
     implementation 'com.github.princekin-f:EasyFloat:2.0.4'
     api 'com.afollestad.material-dialogs:core:0.9.6.0'
 
-
 }

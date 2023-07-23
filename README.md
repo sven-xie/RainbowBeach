@@ -1,32 +1,22 @@
 # Rainbow Beach Tools
 
-
-
 **一个安卓手机开发者工具类。主要包含以下几点功能特色：**
 
-- **在线网页查看、下载、上传文件等方式管理手机存储；**
+- **在线网页查看图片视频、下载、上传文件等方式管理手机存储；**
 - **手动轻松点击屏幕即可查看页面对应View的详细信息；**
 - **支持手机上运行ADB命令，一键截图、录屏；**
 
-
-
 ## 怎么用
 
-1. 添加下面依赖，最新版1.0.4；
-
-2. 调用方法 RainbowBeach.start(activity)
-
-   
+1. 添加下面依赖，Tag替换成最新版本号，如：1.0.7；
 
 ```groovy
 dependencies {
-	        implementation 'com.github.sven-xie:RainbowBeach:Tag'
-	}
+    debugImplementation 'com.github.sven-xie:RainbowBeach:Tag'
+}
 ```
 
 一个安卓手机开发者工具类。主要包含以下几点功能特色：
-
-
 
 ## 查看和管理手机存储
 
@@ -42,11 +32,9 @@ dependencies {
 
   <img src="assets/upload_file.png" alt="企业微信20230715-165620@2x" style="zoom:50%;" />
 
+<img src="assets/open_and_check_video.png" alt="企业微信20230715-165547@2x" style="zoom: 33%;" />
+
 <img src="assets/check_app_private.png" alt="企业微信20230715-165524@2x" style="zoom: 50%;" />
-
-<img src="assets/check_images.png" alt="企业微信20230715-165547@2x" style="zoom: 33%;" />
-
-
 
 ## 查看页面View树布局信息
 
@@ -54,16 +42,10 @@ dependencies {
 
 如果可在界面点击即可获取到对应的控件详细信息呢，通过拿到点击的坐标，和Activity内所有的View的Rect边框做遍历；得到与点击位置重叠的所有View的的详细；可手动切换查看其他边框和详细列表信息；
 
-<img src="assets/check_view_infos.png" alt="screenshot1689411440822" style="zoom: 25%;" />
-
-<img src="assets/check_view_info_detail.png" alt="screenshot1689411453689" style="zoom: 25%;" />
-
-
-
 ## 支持手机上运行ADB命令，一键截图、录屏
 
 在手机开启开发者模式，并开启tcpip 5555端口；即可在手机上运行adb命令
 
 
 
-<img src="assets/other_function.png" alt="screenshot1689411490584" style="zoom:25%;" />
+<img src="assets/app_info_check.png" alt="screenshot1689411490584" style="zoom:25%;" />
