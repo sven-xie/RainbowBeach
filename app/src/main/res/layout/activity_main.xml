@@ -33,6 +33,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_local_sd_service_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -42,8 +43,9 @@
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
+
             <com.sven.rainbowbeach.widgets.CommonButtonView
-                android:id="@+id/btn_open_float_permission"
+                android:id="@+id/btn_jump_to_check_view_info"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginStart="20dp"
@@ -51,22 +53,10 @@
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/common_btn_bg_black"
                 android:gravity="center"
-                android:text="开启悬浮窗权限"
+                android:text="查看view信息"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
-            <FrameLayout
-                android:id="@+id/fl_test_fragment_1"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="20dp" />
-
-            <FrameLayout
-                android:id="@+id/fl_test_fragment_2"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="20dp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
